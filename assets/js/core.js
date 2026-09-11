@@ -432,12 +432,37 @@ try { return (global.QR && global.QR.svg) ? global.QR.svg(text, size || 140, 2) 
 catch (e) { return ''; }
 }
 function copyText(t) {
-if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(t); }
-else {
-var ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta);
-ta.select(); document.execCommand('copy'); ta.remove();
+/* نسخ آمن: نجرّب أكتر من طريقة، ومفيش طريقة تقدر تعطّل الصفحة */
+var text = String(t === undefined || t === null ? '' : t);
+var done = false;
+try {
+if (navigator.clipboard && window.isSecureContext && navigator.clipboard.writeText) {
+navigator.clipboard.writeText(text).then(function () { toast('تم النسخ', text, 'ok'); })
+.catch(function () { if (!fallbackCopy(text)) toast('تعذر النسخ', 'انسخ النص يدوياً', 'warn'); });
+return;
 }
-toast('تم النسخ', t, 'ok');
+} catch (e) { }
+done = fallbackCopy(text);
+if (!done) toast('تعذر النسخ', 'المتصفح مش سامح بالنسخ التلقائي — انسخ يدوياً', 'warn');
+else toast('تم النسخ', text, 'ok');
+}
+function fallbackCopy(text) {
+try {
+if (!document.execCommand || typeof document.execCommand !== 'function') return false;
+var ta = document.createElement('textarea');
+ta.value = text;
+ta.setAttribute('readonly', '');
+ta.style.position = 'fixed';
+ta.style.top = '-1000px';
+ta.style.opacity = '0';
+document.body.appendChild(ta);
+ta.select();
+ta.setSelectionRange(0, text.length);
+var ok = false;
+try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+ta.remove();
+return !!ok;
+} catch (e) { return false; }
 }
 /* ---------------- Activity log ---------------- */
 function log(text, type) {
@@ -484,7 +509,7 @@ class: 'theme-btn no-print', title: 'تبديل الوضع الليلي / الن
 html: '<span class="ic-moon">' + icon('moon', 19) + '</span><span class="ic-sun">' + icon('sun', 19) + '</span>',
 onclick: function () { toggleTheme(); }
 }),
-el('button', { class: 'burger', onclick: function () { $('#mobileNav').classList.toggle('open'); }, html: '<i></i><i></i><i></i>' })
+el('button', { class: 'burger', title: 'القائمة', 'aria-label': 'فتح القائمة', onclick: function () { $('#mobileNav').classList.toggle('open'); }, html: '<i></i><i></i><i></i>' })
 ]);
 inner.appendChild(logo); inner.appendChild(nav); inner.appendChild(actions);
 header.appendChild(inner);
@@ -591,14 +616,14 @@ document.documentElement.setAttribute('data-theme', next);
 lsSet('theme', next);
 try { window.dispatchEvent(new CustomEvent('themechange', { detail: next })); } catch (e) {}
 var m = document.querySelector('meta[name="theme-color"]');
-if (m) m.setAttribute('content', next === 'dark' ? '#04101c' : '#0e7490');
+if (m) m.setAttribute('content', next === 'dark' ? '#0C1418' : '#FBFAF7');
 }
 function initTheme() {
 var saved = lsGet('theme');
 var t = (saved === 'dark' || saved === 'light') ? saved : 'light'; /* الافتراضي: نهاري */
 document.documentElement.setAttribute('data-theme', t);
 var m = document.querySelector('meta[name="theme-color"]');
-if (m) m.setAttribute('content', t === 'dark' ? '#04101c' : '#0e7490');
+if (m) m.setAttribute('content', t === 'dark' ? '#0C1418' : '#FBFAF7');
 }
 /* ---------------- Reveal & counters & ripple ---------------- */
 function initFX() {
@@ -916,7 +941,7 @@ global.LAB = {
 seed: seed, load: load, save: save, db: db, resetDB: resetDB, exportDB: exportDB, importDB: importDB,
 getSession: getSession, setSession: setSession, logout: logout, currentUser: currentUser,
 toast: toast, modal: modal, confirm: confirmBox,
-fileToDataURL: fileToDataURL, downloadBlob: downloadBlob, copyText: copyText,
+fileToDataURL: fileToDataURL, downloadBlob: downloadBlob, copyText: copyText, fallbackCopy: fallbackCopy,
 log: log, notify: notify, buildShell: buildShell, initFX: initFX, initParticles: initParticles,
 qr: qr, trackURL: trackURL, siteURL: siteURL, baseURL: baseURL, icon: icon, ICONS: ICONS,
 hydrateIcons: hydrateIcons, watchIcons: watchIcons, stars: stars, securityCard: securityCard,

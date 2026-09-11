@@ -133,7 +133,7 @@ wrap.innerHTML = '<div class="offer-slide" style="background:' + bg + ';animatio
 '<h3 class="mt-2">' + LAB.escapeHtml(o.title) + '</h3><p style="opacity:.9">' + LAB.escapeHtml(o.sub) + '</p>' +
 '<div class="row mt-2"><a href="booking.html?code=' + encodeURIComponent(o.code) + '" class="btn btn-gold">احجز بالعرض</a>' +
 '<button class="btn btn-outline" style="border-color:#fff;color:#fff" onclick="LAB.copyText(\'' + o.code + '\')">كود: ' + LAB.escapeHtml(o.code) + '</button></div></div>' +
-'<div class="big" style="font-size:64px;opacity:.95">%</div></div></div>';
+'<div class="big" style="opacity:.95">' + LAB.icon('gift', 60) + '</div></div></div>';
 dots.innerHTML = offs.map(function (_, k) {
 return '<button class="dot" data-i="' + k + '" style="width:11px;height:11px;border-radius:50%;border:none;background:' + (k === i ? 'var(--gold)' : 'var(--line)') + ';transition:.3s"></button>';
 }).join('');
@@ -147,12 +147,12 @@ function notifBell(container, role) {
 function render() {
 var list = LAB.db().notifications.filter(function (n) { return n.to === role || n.to === 'all'; });
 var unread = list.filter(function (n) { return !n.read; }).length;
-container.innerHTML = '<button class="btn-icon btn-ghost" style="position:relative">' +
+container.innerHTML = '<button class="btn-icon btn-ghost" title="الإشعارات" aria-label="الإشعارات" style="position:relative">' + LAB.icon('bell', 20) +
 (unread ? '<span style="position:absolute;top:-4px;inset-inline-end:-4px;background:var(--red);color:#fff;font-size:10px;font-weight:900;width:18px;height:18px;border-radius:50%;display:grid;place-items:center">' + unread + '</span>' : '') + '</button>';
 container.querySelector('button').onclick = function () {
 var rows = list.slice(0, 30).map(function (n) {
 return '<div class="file-chip" style="align-items:flex-start;' + (n.read ? 'opacity:.6' : '') + '">' +
-'<span style="font-size:20px">' + ({ booking: '', pay: '', rx: '', doc: '', info: '' }[n.type] || '') + '</span>' +
+'<span style="font-size:20px">' + ({ booking: LAB.icon('calendar', 19), pay: LAB.icon('card', 19), rx: LAB.icon('file', 19), doc: LAB.icon('stethoscope', 19), info: LAB.icon('bell', 19) }[n.type] || LAB.icon('bell', 19)) + '</span>' +
 '<div style="flex:1"><b style="font-size:14px">' + LAB.escapeHtml(n.title) + '</b>' +
 '<div class="small">' + LAB.escapeHtml(n.body) + '</div><div class="small" style="opacity:.7">' + LAB.ago(n.at) + '</div></div></div>';
 }).join('') || '<div class="empty">لا توجد إشعارات</div>';

@@ -44,7 +44,7 @@ window.ADM = { ST: ST, PAY: PAY };
 function badge(map, k) { var v = map[k] || ['—', 'b-gray']; return '<span class="badge ' + v[1] + '">' + v[0] + '</span>'; }
 ADM.badge = badge;
 ADM.tbl = function (headers, rows, empty) {
-if (!rows.length) return '<div class="empty"><span class="ic"></span>' + (empty || 'لا توجد بيانات') + '</div>';
+if (!rows.length) return '<div class="empty"><span class="ic" data-icon="search" data-size="26"></span>' + (empty || 'لا توجد بيانات') + '</div>';
 return '<div class="table-wrap"><table><thead><tr>' + headers.map(function (h) { return '<th>' + h + '</th>'; }).join('') +
 '</tr></thead><tbody>' + rows.join('') + '</tbody></table></div>';
 };
@@ -112,14 +112,14 @@ var today = LAB.dstr(new Date());
 var todayBk = d.bookings.filter(function (b) { return b.date === today; });
 /* KPIs */
 var kpis = [
-['', 'إجمالي الإيرادات', LAB.money(revenue) + ' ج', delta, 'var(--grad)', 'مقارنة بالفترة السابقة'],
-['', 'عدد الحجوزات', all.length, prev.length ? Math.round((all.length - prev.length) / prev.length * 100) : 100, 'linear-gradient(135deg,#7c3aed,#a855f7)', 'حجوزات غير ملغية'],
-['', 'متوسط قيمة الحجز', LAB.money(all.length ? revenue / all.length : 0) + ' ج', 0, 'var(--grad-gold)', 'متوسط الفاتورة'],
-['', 'المحصّل فعلياً', LAB.money(collected) + ' ج', Math.round(revenue ? collected / revenue * 100 : 0), 'linear-gradient(135deg,#16a34a,#22c55e)', 'نسبة التحصيل'],
-['', 'حجوزات اليوم', todayBk.length, 0, 'linear-gradient(135deg,#0284c7,#22d3ee)', 'المجدولة لليوم'],
-['', 'إجمالي المرضى', d.patients.length, 0, 'linear-gradient(135deg,#f43f5e,#fb7185)', 'حسابات مسجلة'],
-['', 'روشتات جديدة', d.prescriptions.filter(function (r) { return r.status === 'new' || r.status === 'reviewing'; }).length, 0, 'linear-gradient(135deg,#f59e0b,#fbbf24)', 'بانتظار المراجعة'],
-['', 'طلبات سحب منزلي', all.filter(function (b) { return b.sampleType === 'home'; }).length, 0, 'linear-gradient(135deg,#0e7c86,#22d3ee)', 'من إجمالي الحجوزات']
+[LAB.icon('chart', 22), 'إجمالي الإيرادات', LAB.money(revenue) + ' ج', delta, 'var(--grad)', 'مقارنة بالفترة السابقة'],
+[LAB.icon('calendar', 22), 'عدد الحجوزات', all.length, prev.length ? Math.round((all.length - prev.length) / prev.length * 100) : 100, 'linear-gradient(135deg,#7c3aed,#a855f7)', 'حجوزات غير ملغية'],
+[LAB.icon('wallet', 22), 'متوسط قيمة الحجز', LAB.money(all.length ? revenue / all.length : 0) + ' ج', 0, 'var(--grad-gold)', 'متوسط الفاتورة'],
+[LAB.icon('check', 22), 'المحصّل فعلياً', LAB.money(collected) + ' ج', Math.round(revenue ? collected / revenue * 100 : 0), 'linear-gradient(135deg,#16a34a,#22c55e)', 'نسبة التحصيل'],
+[LAB.icon('clock', 22), 'حجوزات اليوم', todayBk.length, 0, 'linear-gradient(135deg,#0284c7,#22d3ee)', 'المجدولة لليوم'],
+[LAB.icon('users', 22), 'إجمالي المرضى', d.patients.length, 0, 'linear-gradient(135deg,#f43f5e,#fb7185)', 'حسابات مسجلة'],
+[LAB.icon('file', 22), 'روشتات جديدة', d.prescriptions.filter(function (r) { return r.status === 'new' || r.status === 'reviewing'; }).length, 0, 'linear-gradient(135deg,#f59e0b,#fbbf24)', 'بانتظار المراجعة'],
+[LAB.icon('home', 22), 'طلبات سحب منزلي', all.filter(function (b) { return b.sampleType === 'home'; }).length, 0, 'linear-gradient(135deg,#0e7c86,#22d3ee)', 'من إجمالي الحجوزات']
 ];
 var kw = LAB.el('div', { class: 'kpis' });
 kpis.forEach(function (k, i) {
@@ -262,7 +262,7 @@ LAB.el('span', { class: 'badge ' + ST[b.status][1], html: ST[b.status][0] })
 var al = $('#actList');
 d.activity.slice(0, 10).forEach(function (a) {
 al.appendChild(LAB.el('div', { class: 'file-chip' }, [
-LAB.el('span', { html: '' }),
+LAB.el('span', { html: LAB.icon('activity', 18) }),
 LAB.el('div', { style: 'flex:1' }, [LAB.el('div', { style: 'font-size:14px', html: LAB.escapeHtml(a.text) }), LAB.el('div', { class: 'small', html: LAB.ago(a.at) + ' • ' + LAB.escapeHtml(a.by) })])
 ]));
 });
@@ -342,13 +342,13 @@ return ADM.row([
 '<b>' + b.code + '</b><div class="small">' + LAB.ago(b.createdAt) + '</div>',
 LAB.escapeHtml(b.patientName) + '<div class="small" dir="ltr">' + b.phone + '</div>',
 LAB.fmtDate(b.date) + '<div class="small">' + b.time + '</div>',
-(b.sampleType === 'home' ? ' ' : ' ') + LAB.escapeHtml(b.sampleType === 'home' ? ADM.areaName(b.areaId) : ADM.branchName(b.branchId)),
+(b.sampleType === 'home' ? LAB.icon('home', 13) : LAB.icon('pin', 13)) + LAB.escapeHtml(b.sampleType === 'home' ? ADM.areaName(b.areaId) : ADM.branchName(b.branchId)),
 b.tests.length + (b.packageId ? ' +' : '') + '<div class="small">' + ADM.docName(b) + '</div>',
 '<b>' + LAB.money(b.total) + ' ج</b>',
 (b.paymentMethod === 'cash' ? ' كاش' : ' انستا باي') + '<br>' + badge(PAY, b.paymentStatus),
 badge(ST, b.status),
 '<div class="tbl-actions"><button class="btn btn-sm btn-primary" data-open="' + b.id + '">فتح</button>' +
-'<a class="btn btn-sm btn-ghost" target="_blank" href="https://wa.me/' + String(b.whatsapp || b.phone).replace(/^0/, '2') + '"></a></div>'
+'<a class="btn btn-sm btn-ghost" target="_blank" href="https://wa.me/' + String(b.whatsapp || b.phone).replace(/^0/, '2') + '" title="مراسلة المريض على واتساب">' + LAB.icon('chat', 15) + ' واتساب</a></div>'
 ]);
 });
 box.innerHTML = '<div class="small mb-2">عدد النتائج: <b>' + list.length + '</b> — الإجمالي: <b>' + LAB.money(list.reduce(function (a, b) { return a + b.total; }, 0)) + ' ج</b></div>' +

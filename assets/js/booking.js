@@ -27,7 +27,7 @@ function renderBranches() {
 var w = $('#branchOpts'); w.innerHTML = '';
 d.branches.filter(function (b) { return b.active; }).forEach(function (b) {
 w.appendChild(LAB.el('div', { class: 'opt-card' + (st.branchId === b.id ? ' active' : ''), onclick: function () { st.branchId = b.id; renderBranches(); renderSummary(); } }, [
-LAB.el('span', { class: 'tick', html: LAB.icon('check',15) }), LAB.el('span', { class: 'ic', html: '' }),
+LAB.el('span', { class: 'tick', html: LAB.icon('check',15) }), LAB.el('span', { class: 'ic', html: LAB.icon('pin', 22) }),
 LAB.el('b', { html: LAB.escapeHtml(b.name) }),
 LAB.el('small', { html: LAB.escapeHtml(b.address) }),
 LAB.el('small', { html: ' ' + LAB.escapeHtml(b.hours) })

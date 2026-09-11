@@ -51,7 +51,7 @@ d.branches.filter(function (b) { return b.active; }).forEach(function (b, i) {
 bw.appendChild(LAB.el('div', { class: 'card card-hover reveal', style: 'padding:28px;position:relative;overflow:hidden' }, [
 LAB.el('div', { style: 'position:absolute;inset-inline-end:-40px;top:-40px;width:150px;height:150px;border-radius:50%;background:rgba(14,124,134,.08)' }),
 LAB.el('div', { class: 'row', style: 'gap:14px' }, [
-LAB.el('div', { class: 'ic', style: 'width:56px;height:56px;border-radius:16px;background:var(--grad);display:grid;place-items:center;color:#fff;font-size:24px', html: '' }),
+LAB.el('div', { class: 'ic', style: 'width:56px;height:56px;border-radius:16px;background:var(--grad);display:grid;place-items:center;color:#fff', html: LAB.icon('pin', 26) }),
 LAB.el('div', {}, [LAB.el('h4', { html: LAB.escapeHtml(b.name) }), LAB.el('div', { class: 'small', html: ' ' + LAB.escapeHtml(b.address) })])
 ]),
 LAB.el('div', { class: 'mt-2', style: 'display:grid;gap:8px' }, [

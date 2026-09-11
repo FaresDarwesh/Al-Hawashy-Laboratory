@@ -79,11 +79,11 @@ var earn = paid.reduce(function (a, b) { return a + b.total * (me.commission || 
 var h3 = $('#dcViews h3');
 if (h3) h3.textContent = ' أهلاً ' + me.name;
 var k = LAB.el('div', { class: 'kpis' }, [
-LAB.el('div', { class: 'kpi' }, [LAB.el('div', { class: 'ic', style: 'background:var(--grad)', html: '' }), LAB.el('div', { class: 'val', html: String(mine.length) }), LAB.el('div', { class: 'lbl', html: 'إجمالي حجوزاتي' })]),
-LAB.el('div', { class: 'kpi' }, [LAB.el('div', { class: 'ic', style: 'background:linear-gradient(135deg,#0284c7,#22d3ee)', html: '' }), LAB.el('div', { class: 'val', html: String(todayB.length) }), LAB.el('div', { class: 'lbl', html: 'حجوزات اليوم' })]),
-LAB.el('div', { class: 'kpi' }, [LAB.el('div', { class: 'ic', style: 'background:linear-gradient(135deg,#16a34a,#22c55e)', html: '' }), LAB.el('div', { class: 'val', html: String(doneB.length) }), LAB.el('div', { class: 'lbl', html: 'حالات مكتملة' })]),
-LAB.el('div', { class: 'kpi' }, [LAB.el('div', { class: 'ic', style: 'background:var(--grad-gold)', html: '' }), LAB.el('div', { class: 'val', html: LAB.money(earn) + ' ج' }), LAB.el('div', { class: 'lbl', html: 'مستحقاتي (' + (me.commission || 0) + '%)' })]),
-LAB.el('div', { class: 'kpi' }, [LAB.el('div', { class: 'ic', style: 'background:linear-gradient(135deg,#7c3aed,#a855f7)', html: '' }), LAB.el('div', { class: 'val', html: String(d.prescriptions.filter(function (r) { return r.status === 'new' || r.status === 'reviewing'; }).length) }), LAB.el('div', { class: 'lbl', html: 'روشتات بانتظار المراجعة' })])
+LAB.el('div', { class: 'kpi' }, [LAB.el('div', { class: 'ic', style: 'background:var(--grad)', html: LAB.icon('calendar', 22) }), LAB.el('div', { class: 'val', html: String(mine.length) }), LAB.el('div', { class: 'lbl', html: 'إجمالي حجوزاتي' })]),
+LAB.el('div', { class: 'kpi' }, [LAB.el('div', { class: 'ic', style: 'background:linear-gradient(135deg,#0284c7,#22d3ee)', html: LAB.icon('clock', 22) }), LAB.el('div', { class: 'val', html: String(todayB.length) }), LAB.el('div', { class: 'lbl', html: 'حجوزات اليوم' })]),
+LAB.el('div', { class: 'kpi' }, [LAB.el('div', { class: 'ic', style: 'background:linear-gradient(135deg,#16a34a,#22c55e)', html: LAB.icon('check', 22) }), LAB.el('div', { class: 'val', html: String(doneB.length) }), LAB.el('div', { class: 'lbl', html: 'حالات مكتملة' })]),
+LAB.el('div', { class: 'kpi' }, [LAB.el('div', { class: 'ic', style: 'background:var(--grad-gold)', html: LAB.icon('wallet', 22) }), LAB.el('div', { class: 'val', html: LAB.money(earn) + ' ج' }), LAB.el('div', { class: 'lbl', html: 'مستحقاتي (' + (me.commission || 0) + '%)' })]),
+LAB.el('div', { class: 'kpi' }, [LAB.el('div', { class: 'ic', style: 'background:linear-gradient(135deg,#7c3aed,#a855f7)', html: LAB.icon('file', 22) }), LAB.el('div', { class: 'val', html: String(d.prescriptions.filter(function (r) { return r.status === 'new' || r.status === 'reviewing'; }).length) }), LAB.el('div', { class: 'lbl', html: 'روشتات بانتظار المراجعة' })])
 ]);
 w.appendChild(k);
 var row = LAB.el('div', { class: 'grid', style: 'grid-template-columns:1.3fr 1fr;gap:18px' }, [
@@ -454,10 +454,10 @@ var rate = me.commission || 0;
 var earn = paid.reduce(function (a, b) { return a + b.total * rate / 100; }, 0);
 var pending = unpaid.reduce(function (a, b) { return a + b.total * rate / 100; }, 0);
 var k = LAB.el('div', { class: 'kpis' }, [
-LAB.el('div', { class: 'kpi' }, [LAB.el('div', { class: 'ic', style: 'background:var(--grad)', html: '' }), LAB.el('div', { class: 'val', html: String(mine.length) }), LAB.el('div', { class: 'lbl', html: 'حجوزاتي' })]),
-LAB.el('div', { class: 'kpi' }, [LAB.el('div', { class: 'ic', style: 'background:linear-gradient(135deg,#16a34a,#22c55e)', html: '' }), LAB.el('div', { class: 'val', html: LAB.money(earn) + ' ج' }), LAB.el('div', { class: 'lbl', html: 'مستحق محصّل' })]),
-LAB.el('div', { class: 'kpi' }, [LAB.el('div', { class: 'ic', style: 'background:var(--grad-gold)', html: '' }), LAB.el('div', { class: 'val', html: LAB.money(pending) + ' ج' }), LAB.el('div', { class: 'lbl', html: 'مستحق مؤجل' })]),
-LAB.el('div', { class: 'kpi' }, [LAB.el('div', { class: 'ic', style: 'background:linear-gradient(135deg,#7c3aed,#a855f7)', html: '' }), LAB.el('div', { class: 'val', html: LAB.money(mine.reduce(function (a, b) { return a + b.total; }, 0)) + ' ج' }), LAB.el('div', { class: 'lbl', html: 'قيمة حجوزاتي الكلية' })])
+LAB.el('div', { class: 'kpi' }, [LAB.el('div', { class: 'ic', style: 'background:var(--grad)', html: LAB.icon('calendar', 22) }), LAB.el('div', { class: 'val', html: String(mine.length) }), LAB.el('div', { class: 'lbl', html: 'حجوزاتي' })]),
+LAB.el('div', { class: 'kpi' }, [LAB.el('div', { class: 'ic', style: 'background:linear-gradient(135deg,#16a34a,#22c55e)', html: LAB.icon('wallet', 22) }), LAB.el('div', { class: 'val', html: LAB.money(earn) + ' ج' }), LAB.el('div', { class: 'lbl', html: 'مستحق محصّل' })]),
+LAB.el('div', { class: 'kpi' }, [LAB.el('div', { class: 'ic', style: 'background:var(--grad-gold)', html: LAB.icon('clock', 22) }), LAB.el('div', { class: 'val', html: LAB.money(pending) + ' ج' }), LAB.el('div', { class: 'lbl', html: 'مستحق مؤجل' })]),
+LAB.el('div', { class: 'kpi' }, [LAB.el('div', { class: 'ic', style: 'background:linear-gradient(135deg,#7c3aed,#a855f7)', html: LAB.icon('chart', 22) }), LAB.el('div', { class: 'val', html: LAB.money(mine.reduce(function (a, b) { return a + b.total; }, 0)) + ' ج' }), LAB.el('div', { class: 'lbl', html: 'قيمة حجوزاتي الكلية' })])
 ]);
 w.appendChild(k);
 var rows = mine.slice(0, 40).map(function (b) {
@@ -485,7 +485,7 @@ LAB.el('h4', { html: ' تغيير كلمة المرور' }),
 LAB.el('div', { class: 'field mt-2' }, [LAB.el('label', { html: 'كلمة المرور الحالية' }), LAB.el('input', { class: 'input', type: 'password', id: 'pfOld' })]),
 LAB.el('div', { class: 'field' }, [LAB.el('label', { html: 'كلمة المرور الجديدة' }), LAB.el('input', { class: 'input', type: 'password', id: 'pfNew' })]),
 LAB.el('div', { class: 'field' }, [LAB.el('label', { html: 'الصورة الشخصية' }),
-LAB.el('div', { class: 'dropzone', id: 'pfImg' }, [LAB.el('span', { class: 'ic', html: '' }), LAB.el('b', { html: 'اضغط لرفع صورة' })]),
+LAB.el('div', { class: 'dropzone', id: 'pfImg' }, [LAB.el('span', { class: 'ic', html: LAB.icon('upload', 22) }), LAB.el('b', { html: 'اضغط لرفع صورة' })]),
 LAB.el('div', { class: 'preview-grid', id: 'pfPrev' })]),
 LAB.el('button', {
 class: 'btn btn-primary mt-2', html: ' حفظ', onclick: function () {

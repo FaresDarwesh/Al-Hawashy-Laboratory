@@ -58,26 +58,40 @@ draw('');
 };
 }
 /* ===================== المالية ===================== */
+var EX_CATS = ['كواشف ومستهلكات', 'رواتب', 'إيجار', 'كهرباء ومياه', 'صيانة وأجهزة', 'تسويق وإعلان', 'نقل ومواصلات', 'أخرى'];
+function expenseForm(e) {
+var isNew = !e;
+e = e || { id: LAB.uid(), date: LAB.dstr(new Date()), amount: 0, cat: EX_CATS[0], note: '' };
+LAB.modal({
+title: isNew ? 'تسجيل مصروف' : 'تعديل مصروف',
+html:
+'<div class="field-row"><div class="field"><label>التاريخ</label><input class="input" type="date" id="exDate" value="' + (e.date || LAB.dstr(new Date())) + '"></div>' +
+'<div class="field"><label>المبلغ (ج)</label><input class="input" type="number" id="exAmt" value="' + (e.amount || 0) + '"></div></div>' +
+'<div class="field"><label>التصنيف</label><select class="select" id="exCat">' +
+EX_CATS.map(function (c) { return '<option' + (c === e.cat ? ' selected' : '') + '>' + c + '</option>'; }).join('') + '</select></div>' +
+'<div class="field"><label>البيان</label><input class="input" id="exNote" value="' + LAB.escapeHtml(e.note || '') + '"></div>',
+buttons: [{
+text: 'حفظ', cls: 'btn-primary', action: function (b, close) {
+var amt = Number(b.querySelector('#exAmt').value) || 0;
+if (amt <= 0) { LAB.toast('مطلوب', 'اكتب مبلغ المصروف', 'warn'); return; }
+e.date = b.querySelector('#exDate').value || LAB.dstr(new Date());
+e.amount = amt;
+e.cat = b.querySelector('#exCat').value;
+e.note = b.querySelector('#exNote').value;
+if (isNew) { e.at = new Date().toISOString(); d.expenses.unshift(e); LAB.log('تسجيل مصروف: ' + LAB.money(amt)); }
+else { LAB.log('تعديل مصروف: ' + LAB.money(amt)); }
+LAB.save(); close(); Admin.refresh();
+LAB.toast('تم', isNew ? 'تم تسجيل المصروف' : 'تم تعديل المصروف', 'ok');
+}
+}, { text: 'إلغاء' }]
+});
+}
 Admin.views.finance = {
 title: ' الإيرادات والمصروفات',
 sub: 'صافي الربح، التحصيل، والمصروفات التشغيلية',
 action: function () {
 return [LAB.el('button', {
-class: 'btn btn-primary btn-sm', html: ' مصروف جديد', onclick: function () {
-LAB.modal({
-title: 'تسجيل مصروف', html:
-'<div class="field-row"><div class="field"><label>التاريخ</label><input class="input" type="date" id="exDate" value="' + LAB.dstr(new Date()) + '"></div>' +
-'<div class="field"><label>المبلغ (ج)</label><input class="input" type="number" id="exAmt"></div></div>' +
-'<div class="field"><label>التصنيف</label><select class="select" id="exCat"><option>كواشف ومستهلكات</option><option>رواتب</option><option>إيجار</option><option>كهرباء ومياه</option><option>صيانة أجهزة</option><option>تسويق</option><option>مواصلات</option><option>أخرى</option></select></div>' +
-'<div class="field"><label>البيان</label><input class="input" id="exNote"></div>',
-buttons: [{
-text: 'حفظ', cls: 'btn-primary', action: function (b, close) {
-d.expenses.unshift({ id: LAB.uid(), date: b.querySelector('#exDate').value, amount: Number(b.querySelector('#exAmt').value) || 0, cat: b.querySelector('#exCat').value, note: b.querySelector('#exNote').value, at: new Date().toISOString() });
-LAB.save(); close(); Admin.refresh(); LAB.toast('تم', 'تم تسجيل المصروف', 'ok');
-}
-}, { text: 'إلغاء' }]
-});
-}
+class: 'btn btn-primary btn-sm', html: ' مصروف جديد', onclick: function () { expenseForm(null); }
 })];
 },
 render: function (w) {
@@ -88,11 +102,11 @@ var dueAmt = due.reduce(function (a, b) { return a + b.total; }, 0);
 var exp = d.expenses.reduce(function (a, b) { return a + b.amount; }, 0);
 var fees = d.bookings.filter(function (b) { return b.sampleType === 'home'; }).reduce(function (a, b) { return a + b.homeFee; }, 0);
 var k = LAB.el('div', { class: 'kpis' }, [
-LAB.el('div', { class: 'kpi' }, [LAB.el('div', { class: 'ic', style: 'background:linear-gradient(135deg,#16a34a,#22c55e)', html: '' }), LAB.el('div', { class: 'val', html: LAB.money(rev) + ' ج' }), LAB.el('div', { class: 'lbl', html: 'المحصّل فعلياً' })]),
-LAB.el('div', { class: 'kpi' }, [LAB.el('div', { class: 'ic', style: 'background:var(--grad-gold)', html: '' }), LAB.el('div', { class: 'val', html: LAB.money(dueAmt) + ' ج' }), LAB.el('div', { class: 'lbl', html: 'مستحق التحصيل' })]),
-LAB.el('div', { class: 'kpi' }, [LAB.el('div', { class: 'ic', style: 'background:linear-gradient(135deg,#e11d48,#fb7185)', html: '' }), LAB.el('div', { class: 'val', html: LAB.money(exp) + ' ج' }), LAB.el('div', { class: 'lbl', html: 'إجمالي المصروفات' })]),
-LAB.el('div', { class: 'kpi' }, [LAB.el('div', { class: 'ic', style: 'background:var(--grad)', html: '' }), LAB.el('div', { class: 'val', html: LAB.money(rev - exp) + ' ج' }), LAB.el('div', { class: 'lbl', html: 'صافي الربح' })]),
-LAB.el('div', { class: 'kpi' }, [LAB.el('div', { class: 'ic', style: 'background:linear-gradient(135deg,#7c3aed,#a855f7)', html: '' }), LAB.el('div', { class: 'val', html: LAB.money(fees) + ' ج' }), LAB.el('div', { class: 'lbl', html: 'إيراد رسوم السحب المنزلي' })])
+LAB.el('div', { class: 'kpi' }, [LAB.el('div', { class: 'ic', style: 'background:linear-gradient(135deg,#16a34a,#22c55e)', html: LAB.icon('wallet', 22) }), LAB.el('div', { class: 'val', html: LAB.money(rev) + ' ج' }), LAB.el('div', { class: 'lbl', html: 'المحصّل فعلياً' })]),
+LAB.el('div', { class: 'kpi' }, [LAB.el('div', { class: 'ic', style: 'background:var(--grad-gold)', html: LAB.icon('clock', 22) }), LAB.el('div', { class: 'val', html: LAB.money(dueAmt) + ' ج' }), LAB.el('div', { class: 'lbl', html: 'مستحق التحصيل' })]),
+LAB.el('div', { class: 'kpi' }, [LAB.el('div', { class: 'ic', style: 'background:linear-gradient(135deg,#e11d48,#fb7185)', html: LAB.icon('card', 22) }), LAB.el('div', { class: 'val', html: LAB.money(exp) + ' ج' }), LAB.el('div', { class: 'lbl', html: 'إجمالي المصروفات' })]),
+LAB.el('div', { class: 'kpi' }, [LAB.el('div', { class: 'ic', style: 'background:var(--grad)', html: LAB.icon('chart', 22) }), LAB.el('div', { class: 'val', html: LAB.money(rev - exp) + ' ج' }), LAB.el('div', { class: 'lbl', html: 'صافي الربح' })]),
+LAB.el('div', { class: 'kpi' }, [LAB.el('div', { class: 'ic', style: 'background:linear-gradient(135deg,#7c3aed,#a855f7)', html: LAB.icon('home', 22) }), LAB.el('div', { class: 'val', html: LAB.money(fees) + ' ج' }), LAB.el('div', { class: 'lbl', html: 'إيراد رسوم السحب المنزلي' })])
 ]);
 w.appendChild(k);
 var row = LAB.el('div', { class: 'grid', style: 'grid-template-columns:1fr 1fr;gap:18px' }, [
@@ -105,11 +119,24 @@ var tbl = LAB.el('div', { class: 'chart-card mt-3' }, [LAB.el('h4', { html: ' س
 w.appendChild(tbl);
 var rows = d.expenses.slice().sort(function (a, b) { return new Date(b.date) - new Date(a.date); }).map(function (e) {
 return ADM.row([LAB.fmtDate(e.date), LAB.escapeHtml(e.cat), LAB.escapeHtml(e.note || '—'), '<b>' + LAB.money(e.amount) + ' ج</b>',
-'<button class="btn btn-sm btn-danger" data-x="' + e.id + '">حذف</button>']);
+'<div class="tbl-actions"><button class="btn btn-sm btn-outline" data-e="' + e.id + '">تعديل</button>' +
+'<button class="btn btn-sm btn-danger" data-x="' + e.id + '">حذف</button></div>']);
 });
 $('#expTbl').innerHTML = ADM.tbl(['التاريخ', 'التصنيف', 'البيان', 'المبلغ', 'إجراء'], rows, 'لا توجد مصروفات مسجلة');
+LAB.$$('[data-e]').forEach(function (b) {
+b.onclick = function () {
+var ex = d.expenses.filter(function (x) { return x.id === b.dataset.e; })[0];
+if (ex) expenseForm(ex);
+};
+});
 LAB.$$('[data-x]').forEach(function (b) {
-b.onclick = function () { d.expenses = d.expenses.filter(function (x) { return x.id !== b.dataset.x; }); LAB.save(); Admin.refresh(); };
+b.onclick = function () {
+var ex = d.expenses.filter(function (x) { return x.id === b.dataset.x; })[0];
+LAB.confirm('حذف المصروف', 'حذف مصروف بقيمة ' + LAB.money(ex ? ex.amount : 0) + ' ج؟', function () {
+d.expenses = d.expenses.filter(function (x) { return x.id !== b.dataset.x; });
+LAB.save(); LAB.log('حذف مصروف'); Admin.refresh();
+}, 'احذف');
+};
 });
 var mNames = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
 var mL = [], mRev = [], mExp = [];
@@ -525,7 +552,7 @@ LAB.el('div', { class: 'row-between' }, [LAB.el('b', { html: LAB.escapeHtml(o.ti
 LAB.el('div', { class: 'small mt-1', html: LAB.escapeHtml(o.sub) }),
 LAB.el('div', { class: 'small mt-1', html: 'الكود: <b dir="ltr">' + LAB.escapeHtml(o.code) + '</b>' }),
 LAB.el('div', { class: 'row mt-2' }, [
-btn('', 'btn-outline', function () {
+btn(LAB.icon('edit', 14) + ' تعديل', 'btn-outline', function () {
 LAB.modal({
 title: 'تعديل العرض', html: '<div class="field"><label>العنوان</label><input class="input" id="ot" value="' + LAB.escapeHtml(o.title) + '"></div>' +
 '<div class="field"><label>الوصف</label><input class="input" id="os" value="' + LAB.escapeHtml(o.sub) + '"></div>' +
@@ -533,8 +560,12 @@ title: 'تعديل العرض', html: '<div class="field"><label>العنوان<
 buttons: [{ text: 'حفظ', cls: 'btn-primary', action: function (b, close) { o.title = b.querySelector('#ot').value; o.sub = b.querySelector('#os').value; o.code = b.querySelector('#oc').value; LAB.save(); close(); Admin.refresh(); } }, { text: 'إلغاء' }]
 });
 }),
-btn(o.active ? '' : '▶', 'btn-ghost', function () { o.active = !o.active; LAB.save(); Admin.refresh(); }),
-btn('', 'btn-danger', function () { d.offers = d.offers.filter(function (x) { return x.id !== o.id; }); LAB.save(); Admin.refresh(); })
+btn(o.active ? LAB.icon('eye', 14) + ' إيقاف' : LAB.icon('check', 14) + ' تشغيل', 'btn-ghost', function () { o.active = !o.active; LAB.save(); Admin.refresh(); }),
+btn(LAB.icon('trash', 14) + ' حذف', 'btn-danger', function () {
+LAB.confirm('حذف العرض', 'حذف "' + LAB.escapeHtml(o.title) + '"؟', function () {
+d.offers = d.offers.filter(function (x) { return x.id !== o.id; }); LAB.save(); LAB.log('حذف عرض: ' + o.title); Admin.refresh();
+}, 'احذف');
+})
 ])
 ]));
 });
@@ -713,7 +744,7 @@ return LAB.el('button', { class: 'chip' + ((s.closedDays || []).indexOf(i) >= 0 
 LAB.el('label', { class: 'switch mt-2' }, [LAB.el('input', { type: 'checkbox', id: 'sHome', checked: s.homeServiceEnabled ? true : null }), LAB.el('span', { class: 'track' }), LAB.el('span', { html: 'تفعيل خدمة السحب المنزلي' })]),
 LAB.el('div', { class: 'field mt-2' }, [LAB.el('label', { html: 'رسوم السحب الأساسية (ج)' }), LAB.el('input', { class: 'input', type: 'number', id: 'sHomeFee', value: s.homeBaseFee || 0 })]),
 LAB.el('div', { class: 'field' }, [LAB.el('label', { html: 'صورة الدكتور (تظهر في الرئيسية)' }),
-LAB.el('div', { class: 'dropzone', id: 'sImg' }, [LAB.el('span', { class: 'ic', html: '' }), LAB.el('b', { html: 'اضغط لرفع صورة' })]),
+LAB.el('div', { class: 'dropzone', id: 'sImg' }, [LAB.el('span', { class: 'ic', html: LAB.icon('upload', 22) }), LAB.el('b', { html: 'اضغط لرفع صورة' })]),
 LAB.el('div', { class: 'preview-grid', id: 'sImgPrev' })]),
 LAB.el('button', {
 class: 'btn btn-primary mt-3', html: ' حفظ كل الإعدادات', onclick: function () {
