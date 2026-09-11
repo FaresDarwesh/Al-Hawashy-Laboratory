@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>لوحة تحكم المدير | معمل الحوشي للتحاليل الطبية</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230e7c86'/><text x='50' y='70' font-size='58' text-anchor='middle' fill='white' font-family='Arial'>حـ</text></svg>">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body> <!-- ===== LOGIN ===== -->
+<div id="adLogin" class="login-wrap"> <div class="blob" style="width:420px;height:420px;background:#0e7c86;top:-120px;inset-inline-end:-140px"></div> <div class="blob" style="width:360px;height:360px;background:#22d3ee;bottom:-140px;inset-inline-start:-120px"></div> <div class="login-card"> <div class="logo" style="justify-content:center"><div class="logo-mark">حـ</div><div class="center"><b id="lgLab"></b><small>لوحة تحكم المدير</small></div></div> <div class="field"><label>اسم المستخدم</label><input id="adUser" class="input" placeholder="admin" autocomplete="username"></div> <div class="field"><label>كلمة المرور</label><input id="adPass" class="input" type="password" placeholder="••••" autocomplete="current-password"></div> <button class="btn btn-primary w-full" id="adBtn"> دخول لوحة التحكم</button> <p class="small center mt-2">الدخول للمدير العام فقط. الأطباء من <a href="doctor.html" style="color:var(--teal);font-weight:800">صفحة الطبيب</a>.</p> <div class="pay-box mt-2" style="font-size:12.5px"> <b>بيانات الدخول الافتراضية:</b><br>
+المستخدم: <b dir="ltr">admin</b> — كلمة المرور: <b dir="ltr">eh2024</b> </div> </div>
+</div> <!-- ===== DASHBOARD ===== -->
+<div id="adDash" class="dash hide"> <aside class="sidebar" id="adSide"> <div class="brand"><div class="logo-mark" style="width:38px;height:38px;font-size:16px;border-radius:11px">حـ</div><span>معمل الحوشي</span></div> <div class="side-sec">الرئيسية</div> <nav class="side-nav"> <a href="#" data-v="overview" class="active"><span class="ic"></span>نظرة عامة</a> <a href="#" data-v="bookings"><span class="ic"></span>الحجوزات<span class="cnt" id="cBk">0</span></a> <a href="#" data-v="rx"><span class="ic"></span>الروشتات<span class="cnt" id="cRx">0</span></a> <a href="#" data-v="patients"><span class="ic"></span>المرضى</a> <a href="#" data-v="finance"><span class="ic"></span>الإيرادات والمصروفات</a> </nav> <div class="side-sec">الإدارة</div> <nav class="side-nav"> <a href="#" data-v="tests"><span class="ic"></span>التحاليل والأسعار</a> <a href="#" data-v="packages"><span class="ic"></span>الباقات</a> <a href="#" data-v="branches"><span class="ic"></span>الفروع</a> <a href="#" data-v="doctors"><span class="ic"></span>الأطباء والصلاحيات</a> <a href="#" data-v="areas"><span class="ic"></span>المناطق ورسوم السحب</a> </nav> <div class="side-sec">التسويق والمحتوى</div> <nav class="side-nav"> <a href="#" data-v="offers"><span class="ic"></span>العروض والأكواد</a> <a href="#" data-v="content"><span class="ic"></span>المحتوى والآراء</a> <a href="#" data-v="settings"><span class="ic"></span>إعدادات المعمل</a> <a href="#" data-v="msgs"><span class="ic"></span>مركز الرسائل</a> <a href="#" data-v="poster"><span class="ic"></span>QR وملصقات</a> <a href="#" data-v="logs"><span class="ic"></span>سجل النشاطات</a> </nav> <div class="side-sec"></div> <nav class="side-nav"> <a href="index.html"><span class="ic"></span>الصفحة الرئيسية</a> <a href="#" id="adLogout"><span class="ic"></span>تسجيل الخروج</a> </nav> </aside> <main class="dash-main"> <div class="dash-top no-print"> <div class="row"> <button class="burger" id="adBurger" style="display:grid"></button> <div> <b style="font-size:17px" id="adWelcome">أهلاً بك</b> <div class="small" id="adDate"></div> </div> </div> <div class="row"> <div id="adBell"></div> <button class="btn-icon btn-ghost" id="adTheme" title="الوضع الليلي"></button> <button class="btn btn-ghost btn-sm" id="adBackup"> نسخة احتياطية</button> <button class="btn btn-primary btn-sm" id="adQuick">+ حجز سريع</button> </div> </div> <div id="adViews"></div> </main>
+</div> <script src="assets/js/core.js"></script>
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/sync.js"></script>
+<script src="assets/js/charts.js"></script>
+<script src="assets/js/qr.js"></script>
+<script src="assets/js/shared.js"></script>
+<script src="assets/js/admin.js"></script>
+<script src="assets/js/admin2.js"></script>
+</body>
+</html>

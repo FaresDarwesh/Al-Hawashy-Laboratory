@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>التحاليل والأسعار | معمل الحوشي للتحاليل الطبية</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230e7c86'/><text x='50' y='70' font-size='58' text-anchor='middle' fill='white' font-family='Arial'>حـ</text></svg>">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<section class="section" style="padding-top:calc(var(--header-h) + 46px);min-height:70vh"> <div class="container"> <div class="sec-head reveal"> <span class="eyebrow">كتالوج التحاليل</span> <h2 class="mt-2">كل التحاليل <span class="grad-text">وأسعارها</span> بوضوح</h2> <p>اختار التحاليل اللي محتاجها وسيب الباقي علينا — الأسعار واضحة ورسوم السحب المنزلي بتتحسب أوتوماتيك حسب منطقتك.</p> </div> <div class="split" style="grid-template-columns:1fr 330px;align-items:start;gap:26px"> <div> <div class="card reveal" style="padding:18px;margin-bottom:20px;position:sticky;top:calc(var(--header-h) + 8px);z-index:50"> <div class="row" style="gap:10px"> <input id="q" class="input" placeholder=" ابحث باسم التحليل أو التصنيف…" style="flex:1;min-width:180px"> <select id="sort" class="select" style="width:auto"> <option value="name">الاسم (أ-ي)</option> <option value="priceAsc">السعر: الأقل</option> <option value="priceDesc">السعر: الأعلى</option> <option value="fast">الأسرع نتيجة</option> </select> </div> <div class="chips mt-2" id="cats"></div> </div> <div id="list" class="test-grid"></div> <div class="empty hide" id="noRes"><span class="ic"></span>مفيش نتائج مطابقة<br><a href="prescription.html" class="btn btn-primary btn-sm mt-2">ارفع الروشتة وهنحددها لك</a></div> </div> <aside class="summary reveal"> <h4> سلتك <span class="badge b-new" id="cartCount">0</span></h4> <div id="cartItems"></div> <div class="sum-total"><span>الإجمالي</span><span id="cartTotal" style="color:var(--teal)">0 ج</span></div> <p class="small mt-1">* رسوم السحب المنزلي بتُضاف في خطوة الحجز حسب منطقتك.</p> <a href="booking.html" class="btn btn-primary w-full mt-2">متابعة الحجز ←</a> <button class="btn btn-ghost w-full mt-1" id="clearCart">تفريغ السلة</button> <div class="divider"></div> <h4> باقات مخفضة</h4> <div id="pkgList" style="display:grid;gap:10px"></div> </aside> </div> </div>
+</section> <script src="assets/js/core.js"></script>
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/sync.js"></script>
+<script src="assets/js/shared.js"></script>
+<script>
+(function(){
+LAB.load(); LAB.buildShell('tests.html');
+var d = LAB.db(), cat = 'الكل', q = '';
+var cats = ['الكل'];
+d.tests.forEach(function(t){ if(cats.indexOf(t.category)<0) cats.push(t.category); });
+function renderCats(){
+var w = $('#cats'); w.innerHTML='';
+cats.forEach(function(c){
+w.appendChild(LAB.el('button',{class:'chip'+(c===cat?' active':''),html:LAB.escapeHtml(c)+(c==='الكل'?'':' ('+d.tests.filter(function(t){return t.category===c&&t.active;}).length+')'),
+onclick:function(){ cat=c; renderCats(); render(); }}));
+});
+}
+function render(){
+var list = d.tests.filter(function(t){
+if(!t.active) return false;
+if(cat!=='الكل' && t.category!==cat) return false;
+if(q && (t.name+t.category).toLowerCase().indexOf(q)<0) return false;
+return true;
+});
+var s = $('#sort').value;
+list.sort(function(a,b){
+if(s==='priceAsc') return a.price-b.price;
+if(s==='priceDesc') return b.price-a.price;
+if(s==='fast') return a.hours-b.hours;
+return a.name.localeCompare(b.name,'ar');
+});
+var w = $('#list'); w.innerHTML='';
+list.forEach(function(t){ w.appendChild(Shared.testCard(t,{selectable:true})); });
+$('#noRes').classList.toggle('hide', list.length>0);
+}
+function renderCart(){
+var items = Cart.items(), w = $('#cartItems'); w.innerHTML='';
+$('#cartCount').textContent = items.length;
+if(!items.length) w.innerHTML = '<div class="empty" style="padding:24px 0"><span class="ic"></span>سلتك فاضية — اختار تحليل أو باقة</div>';
+items.forEach(function(it){
+w.appendChild(LAB.el('div',{class:'sum-line'},[
+LAB.el('span',{html:(it.type==='pkg'?' ':'')+LAB.escapeHtml(it.name)}),
+LAB.el('span',{},[
+LAB.el('b',{html:LAB.money(it.price)+' ج'}),
+LAB.el('button',{class:'x',style:'width:24px;height:24px;font-size:14px;margin-inline-start:8px',html:'×',
+onclick:function(){ Cart.remove(it.name); if(it.type==='pkg'){Cart.get().pkg=null;Cart.set(Cart.get());} renderCart(); }})
+])
+]));
+});
+$('#cartTotal').textContent = LAB.money(Cart.subtotal())+' ج';
+}
+function renderPkg(){
+var w=$('#pkgList'); w.innerHTML='';
+d.packages.filter(function(p){return p.active;}).forEach(function(p){
+var sum=0; p.tests.forEach(function(n){var t=d.tests.filter(function(x){return x.name===n;})[0]; if(t) sum+=t.price;});
+w.appendChild(LAB.el('div',{class:'opt-card'+(Cart.get().pkg===p.id?' active':''),style:'padding:14px',
+onclick:function(){ var c=Cart.get(); c.pkg = (c.pkg===p.id?null:p.id); Cart.set(c); renderPkg(); renderCart(); }},[
+LAB.el('div',{class:'row-between'},[LAB.el('b',{style:'font-size:14px',html:LAB.escapeHtml(p.name)}),LAB.el('b',{style:'color:var(--teal)',html:LAB.money(p.price)+' ج'})]),
+LAB.el('small',{html:p.tests.length+' تحاليل — وفّر '+LAB.money(Math.max(0,sum-p.price))+' ج'}),
+LAB.el('button',{class:'btn btn-sm '+(Cart.get().pkg===p.id?'btn-success':'btn-outline'),style:'margin-top:8px',html:Cart.get().pkg===p.id?'<i data-icon="check"></i> مختارة':'اختيار'})
+]));
+});
+}
+$('#q').addEventListener('input',function(){ q=this.value.trim().toLowerCase(); render(); });
+$('#sort').addEventListener('change',render);
+$('#clearCart').onclick=function(){ Cart.clear(); renderCart(); renderPkg(); };
+window.addEventListener('cartchange',function(){ renderCart(); });
+renderCats(); render(); renderCart(); renderPkg();
+LAB.initFX();
+})();
+</script>
+</body>
+</html>

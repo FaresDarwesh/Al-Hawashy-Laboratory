@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>لوحة الطبيب | معمل الحوشي للتحاليل الطبية</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230e7c86'/><text x='50' y='70' font-size='58' text-anchor='middle' fill='white' font-family='Arial'>حـ</text></svg>">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body> <div id="dcLogin" class="login-wrap"> <div class="blob" style="width:400px;height:400px;background:#16a34a;top:-120px;inset-inline-end:-130px;opacity:.4"></div> <div class="blob" style="width:360px;height:360px;background:#0e7c86;bottom:-130px;inset-inline-start:-120px"></div> <div class="login-card"> <div class="logo" style="justify-content:center"><div class="logo-mark"></div><div class="center"><b id="dcLab"></b><small>لوحة الطبيب</small></div></div> <div class="field"><label>اسم المستخدم</label><input id="dcUser" class="input" placeholder="heba" autocomplete="username"></div> <div class="field"><label>كلمة المرور</label><input id="dcPass" class="input" type="password" placeholder="••••" autocomplete="current-password"></div> <button class="btn btn-primary w-full" id="dcBtn">دخول</button> <p class="small center mt-2">المدير العام يدخل من <a href="admin.html" style="color:var(--teal);font-weight:800">لوحة المدير</a>.</p> <div class="pay-box mt-2" style="font-size:12.5px"> <b>حسابات تجريبية:</b><br> <span dir="ltr">heba / 123456</span> — <span dir="ltr">kareem / 123456</span> </div> </div>
+</div> <div id="dcDash" class="dash hide"> <aside class="sidebar" id="dcSide"> <div class="brand"><div class="logo-mark" style="width:38px;height:38px;font-size:16px;border-radius:11px"></div><span>لوحة الطبيب</span></div> <div class="side-sec">العمل</div> <nav class="side-nav"> <a href="#" data-v="home" class="active"><span class="ic"></span>نظرتي</a> <a href="#" data-v="mine"><span class="ic"></span>حجوزاتي<span class="cnt" id="dcBk">0</span></a> <a href="#" data-v="open"><span class="ic"></span>حجوزات بدون طبيب<span class="cnt" id="dcOpen">0</span></a> <a href="#" data-v="rx"><span class="ic"></span>الروشتات<span class="cnt" id="dcRx">0</span></a> <a href="#" data-v="results"><span class="ic"></span>رفع النتائج</a> <a href="#" data-v="patients"><span class="ic"></span>مرضاي</a> </nav> <div class="side-sec">الحساب</div> <nav class="side-nav"> <a href="#" data-v="prices"><span class="ic"></span>تسعيرة الكشف المنزلي</a> <a href="#" data-v="earn"><span class="ic"></span>مستحقاتي</a> <a href="#" data-v="profile"><span class="ic"></span>بياناتي وكلمة المرور</a> <a href="index.html"><span class="ic"></span>الموقع</a> <a href="#" id="dcLogout"><span class="ic"></span>خروج</a> </nav> </aside> <main class="dash-main"> <div class="dash-top no-print"> <div class="row"> <button class="burger" id="dcBurger" style="display:grid"></button> <div class="row"> <div id="dcAvatar" class="avatar"></div> <div><b style="font-size:17px" id="dcName"></b><div class="small" id="dcTitle"></div></div> </div> </div> <div class="row"> <div id="dcBell"></div> <button class="btn-icon btn-ghost" onclick="LAB.toggleTheme()"></button> </div> </div> <div id="dcViews"></div> </main>
+</div> <script src="assets/js/core.js"></script>
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/sync.js"></script>
+<script src="assets/js/charts.js"></script>
+<script src="assets/js/qr.js"></script>
+<script src="assets/js/shared.js"></script>
+<script src="assets/js/doctor.js"></script>
+</body>
+</html>

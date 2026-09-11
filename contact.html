@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>تواصل معنا | معمل الحوشي للتحاليل الطبية</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230e7c86'/><text x='50' y='70' font-size='58' text-anchor='middle' fill='white' font-family='Arial'>حـ</text></svg>">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<section class="section" style="padding-top:calc(var(--header-h) + 44px);min-height:70vh"> <div class="container"> <div class="sec-head reveal"> <span class="eyebrow">تواصل معنا</span> <h2 class="mt-2">إحنا هنا <span class="grad-text">لخدمتك</span></h2> <p>أي استفسار عن تحليل أو نتيجة أو عرض — كلمنا هنرد عليك في الحال.</p> </div> <div class="split" style="grid-template-columns:.9fr 1.1fr;gap:34px;align-items:start"> <div class="reveal"> <div id="contactCards" style="display:grid;gap:14px"></div> <div class="card mt-3" style="padding:22px"> <h4> مواعيد العمل</h4> <div id="hoursList" style="display:grid;gap:8px;margin-top:10px"></div> </div> <div class="card mt-3" style="padding:22px;background:var(--grad);color:#fff"> <h4 style="color:#fff"> الدفع بانستا باي</h4> <p style="opacity:.92;font-size:14px">حوّل على الرقم وابعت الإيصال على واتساب المعمل.</p> <div class="ip-number" style="background:rgba(255,255,255,.18);box-shadow:none"> <span id="cIP"></span> <button class="btn btn-sm btn-gold" onclick="LAB.copyText(LAB.db().settings.instapay)"> نسخ</button> </div> </div> </div> <div class="card reveal d1" style="padding:28px"> <h4 class="mb-2"> ابعتلنا رسالة</h4> <div class="field-row"> <div class="field"><label>الاسم</label><input id="cName" class="input"></div> <div class="field"><label>الموبايل</label><input id="cPhone" class="input" inputmode="tel" dir="ltr"></div> </div> <div class="field"><label>الموضوع</label><select id="cSubject" class="select"><option>استفسار عن تحليل</option><option>استفسار عن نتيجة</option><option>شكوى أو اقتراح</option><option>تعاون / تأمين طبي</option><option>أخرى</option></select></div> <div class="field"><label>الرسالة</label><textarea id="cMsg" class="textarea" placeholder="اكتب رسالتك…"></textarea></div> <div class="row"> <button class="btn btn-primary" id="cSend">إرسال</button> <a id="cWa" target="_blank" class="btn btn-success"> إرسال عبر واتساب</a> </div> <div class="divider"></div> <div id="branchBox" style="display:grid;gap:14px"></div> </div> </div> </div>
+</section> <script src="assets/js/core.js"></script>
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/sync.js"></script>
+<script src="assets/js/shared.js"></script>
+<script>
+(function(){
+LAB.load(); LAB.buildShell('contact.html');
+var d=LAB.db(), s=d.settings;
+$('#cIP').textContent=s.instapay;
+var info=[
+['','اتصل بنا', s.phones.join(' / '), 'tel:'+s.phones[0]],
+['','واتساب', s.whatsapp, 'https://wa.me/'+s.whatsapp],
+['','البريد الإلكتروني', s.email, 'mailto:'+s.email],
+['','العنوان', s.address, 'https://maps.google.com/?q='+encodeURIComponent(s.address)]
+];
+var wrap=$('#contactCards');
+info.forEach(function(i){
+wrap.appendChild(LAB.el('a',{href:i[3],target:'_blank',class:'card card-hover',style:'padding:18px;display:flex;gap:14px;align-items:center'},[
+LAB.el('div',{style:'width:48px;height:48px;border-radius:14px;background:var(--grad);color:#fff;display:grid;place-items:center;font-size:22px;flex:none',html:i[0]}),
+LAB.el('div',{},[LAB.el('b',{style:'font-size:15px',html:i[1]}),LAB.el('div',{class:'small',dir:/^[0-9+]/.test(i[2])?'ltr':null,html:LAB.escapeHtml(i[2])})])
+]));
+});
+var daysNames=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+var hw=$('#hoursList');
+daysNames.forEach(function(n,i){
+var closed=s.closedDays.indexOf(i)>=0;
+hw.appendChild(LAB.el('div',{class:'row-between',style:'border-bottom:1px dashed var(--line);padding:6px 0;font-size:14px'},[
+LAB.el('b',{html:n}),
+LAB.el('span',{style:closed?'color:var(--red);font-weight:800':'color:var(--teal);font-weight:800',html:closed?'أجازة':s.workFrom+' - '+s.workTo})
+]));
+});
+var bw=$('#branchBox');
+d.branches.filter(function(b){return b.active;}).forEach(function(b){
+bw.appendChild(LAB.el('div',{class:'pay-box',style:'padding:16px'},[
+LAB.el('b',{html:' '+LAB.escapeHtml(b.name)}),
+LAB.el('div',{class:'small',html:' '+LAB.escapeHtml(b.address)}),
+LAB.el('div',{class:'small',html:' '+LAB.escapeHtml(b.hours)}),
+LAB.el('div',{class:'row mt-1'},[
+LAB.el('a',{href:'tel:'+b.phone,class:'btn btn-sm btn-outline',html:' '+b.phone}),
+LAB.el('a',{href:'https://maps.google.com/?q='+encodeURIComponent(b.address),target:'_blank',class:'btn btn-sm btn-ghost',html:' الخريطة'})
+])
+]));
+});
+$('#cSend').onclick=function(){
+var n=$('#cName').value,p=$('#cPhone').value,m=$('#cMsg').value;
+if(!n||!p||!m){ LAB.toast('مطلوب','أكمل كل البيانات','warn'); return; }
+var rec={id:LAB.uid(),name:n,phone:p,subject:$('#cSubject').value,msg:m,at:new Date().toISOString()};
+d.notifications.unshift({id:LAB.uid(),title:'رسالة جديدة: '+rec.subject,body:n+' — '+p+' : '+m.slice(0,60),type:'info',to:'admin',at:rec.at,read:false});
+LAB.save(); LAB.log('رسالة جديدة من '+n);
+LAB.modal({title:' تم الإرسال',html:'<div class="center"><div style="font-size:48px"></div><p class="lead mt-2">وصلتنا رسالتك وهنرد عليك في أقرب وقت على <b dir="ltr">'+LAB.escapeHtml(p)+'</b></p></div>'});
+$('#cName').value=$('#cPhone').value=$('#cMsg').value='';
+};
+function waLink(){
+var t=encodeURIComponent('السلام عليكم معمل الحوشي،\nالاسم: '+$('#cName').value+'\nالموضوع: '+$('#cSubject').value+'\n'+$('#cMsg').value);
+$('#cWa').href='https://wa.me/'+s.whatsapp+'?text='+t;
+}
+['#cName','#cSubject','#cMsg'].forEach(function(id){ $(id).addEventListener('input',waLink); });
+waLink();
+LAB.initFX();
+})();
+</script>
+</body>
+</html>

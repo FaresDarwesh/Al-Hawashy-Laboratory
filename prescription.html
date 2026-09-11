@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ارفع الروشتة | معمل الحوشي للتحاليل الطبية</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230e7c86'/><text x='50' y='70' font-size='58' text-anchor='middle' fill='white' font-family='Arial'>حـ</text></svg>">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<section class="section" style="padding-top:calc(var(--header-h) + 40px);min-height:80vh"> <div class="container"> <div class="sec-head reveal"> <span class="eyebrow"> خدمة الروشتة الذكية</span> <h2 class="mt-2">صوّر روشتتك واعرف <span class="grad-text">التكلفة فوراً</span></h2> <p>ارفع صورة الروشتة أو اكتب التحاليل المطلوبة — وهنحددها ونرد عليك بالسعر الإجمالي في دقائق.</p> </div> <div class="split" style="grid-template-columns:1fr 380px;align-items:start;gap:26px"> <div class="card reveal" style="padding:30px"> <div class="tabs"> <button class="tab active" data-t="upload"> رفع صورة الروشتة</button> <button class="tab" data-t="text"> كتابة التحاليل</button> <button class="tab" data-t="follow"> متابعة روشتة سابقة</button> </div> <!-- رفع صورة --> <div class="pane" id="pane-upload"> <div class="dropzone" id="dzRx"> <span class="ic"></span><b>اضغط لرفع صورة الروشتة</b> <small>أو اسحب الصورة هنا — JPG/PNG حتى 6 ميجا — يمكن رفع أكثر من صورة</small> </div> <div class="preview-grid" id="pvRx"></div> <div class="divider"></div> <div class="field-row"> <div class="field"><label>الاسم <span class="req">*</span></label><input id="rxName" class="input" placeholder="اسم المريض"></div> <div class="field"><label>رقم الواتساب <span class="req">*</span></label><input id="rxPhone" class="input" inputmode="tel" placeholder="01XXXXXXXXX" dir="ltr"></div> </div> <div class="field"><label>اسم الدكتور الكاشف (اختياري)</label><input id="rxDoc" class="input" list="rxDocs" placeholder="د. …"><datalist id="rxDocs"></datalist></div> <div class="field"><label>ملاحظات</label><textarea id="rxNotes" class="textarea" placeholder="أي ملاحظات: صيام، حمل، أدوية…"></textarea></div> <button class="btn btn-primary btn-lg w-full mt-2" id="sendRx"> إرسال الروشتة للمعمل</button> <p class="small center mt-2">هنراجع الروشتة ونرد عليك بالتحاليل والسعر على الواتساب خلال دقائق العمل.</p> </div> <!-- كتابة نص --> <div class="pane hide" id="pane-text"> <p class="small mb-2">اكتب أو الصق التحاليل المكتوبة في الروشتة — وهنطابقها تلقائياً مع قائمة تحاليلنا ونحسبلك التكلفة فوراً.</p> <div class="field"><label>نص الروشتة</label> <textarea id="rxText" class="textarea" style="min-height:170px" placeholder="مثال: CBC - FBS - HbA1c - ALT - Creatinine - Urine analysis - Vitamin D"></textarea> </div> <button class="btn btn-gold w-full" id="analyzeBtn"> حلل الروشتة واحسب التكلفة</button> <div id="analyzeRes" class="mt-3"></div> </div> <!-- متابعة --> <div class="pane hide" id="pane-follow"> <div class="field"><label>رقم الواتساب اللي رفعت بيه الروشتة <span class="req">*</span></label><input id="fxPhone" class="input" inputmode="tel" dir="ltr" placeholder="01XXXXXXXXX"></div> <button class="btn btn-primary w-full" id="fxBtn">عرض روشتاتي</button> <div id="fxRes" class="mt-3"></div> </div> </div> <aside class="summary reveal"> <h4> إزاي الخدمة بتشتغل؟</h4> <div style="display:grid;gap:14px;margin-top:8px"> <div class="row" style="align-items:flex-start;gap:11px"><div class="ic" style="width:36px;height:36px;border-radius:11px;background:var(--grad);color:#fff;display:grid;place-items:center;flex:none">1</div><div><b style="font-size:14.5px">ارفع الصورة</b><div class="small">صوّر روشتة طبيبك بوضوح وارفعها.</div></div></div> <div class="row" style="align-items:flex-start;gap:11px"><div class="ic" style="width:36px;height:36px;border-radius:11px;background:var(--grad);color:#fff;display:grid;place-items:center;flex:none">2</div><div><b style="font-size:14.5px">تحديد التحاليل</b><div class="small">الدكاترة بيحددوا التحاليل المطلوبة بدقة.</div></div></div> <div class="row" style="align-items:flex-start;gap:11px"><div class="ic" style="width:36px;height:36px;border-radius:11px;background:var(--grad);color:#fff;display:grid;place-items:center;flex:none">3</div><div><b style="font-size:14.5px">تسعير فوري</b><div class="small">هنبعتلك السعر الإجمالي ولينك حجز مباشر.</div></div></div> <div class="row" style="align-items:flex-start;gap:11px"><div class="ic" style="width:36px;height:36px;border-radius:11px;background:var(--grad);color:#fff;display:grid;place-items:center;flex:none">4</div><div><b style="font-size:14.5px">احجز وادفع</b><div class="small">احجز من البيت وادفع كاش أو انستا باي.</div></div></div> </div> <div class="divider"></div> <h4> الباقات الأكثر طلباً</h4> <div id="rxPkgs" style="display:grid;gap:10px;margin-top:10px"></div> <div class="divider"></div> <div class="small"><b> استعجال؟</b> كلمنا على <a dir="ltr" id="rxTel" href="#"></a></div> </aside> </div> </div>
+</section> <script src="assets/js/core.js"></script>
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/sync.js"></script>
+<script src="assets/js/shared.js"></script>
+<script>
+(function(){
+LAB.load(); LAB.buildShell('prescription.html');
+var d = LAB.db(), s = d.settings, rxFiles = [];
+$('#rxTel').textContent = s.phones[0]; $('#rxTel').href='tel:'+s.phones[0];
+var dl = $('#rxDocs');
+d.doctors.filter(function(x){return x.active;}).forEach(function(x){ dl.appendChild(LAB.el('option',{value:x.name})); });
+/* tabs */
+$$('.tab').forEach(function(t){
+t.onclick=function(){
+$$('.tab').forEach(function(x){x.classList.remove('active');}); t.classList.add('active');
+$$('.pane').forEach(function(p){ p.classList.add('hide'); });
+$('#pane-'+t.dataset.t).classList.remove('hide');
+};
+});
+/* رفع الصور */
+var dz=$('#dzRx'), pv=$('#pvRx');
+var inp=LAB.el('input',{type:'file',accept:'image/*',multiple:true,style:'display:none'});
+dz.appendChild(inp);
+dz.onclick=function(){ inp.click(); };
+['dragenter','dragover'].forEach(function(e){dz.addEventListener(e,function(ev){ev.preventDefault();dz.classList.add('over');});});
+['dragleave','drop'].forEach(function(e){dz.addEventListener(e,function(ev){ev.preventDefault();dz.classList.remove('over');});});
+dz.addEventListener('drop',function(e){ handle(e.dataTransfer.files); });
+inp.onchange=function(){ handle(this.files); inp.value=''; };
+function handle(files){
+Array.prototype.slice.call(files).forEach(function(f){
+if(!/^image\//.test(f.type)){ LAB.toast('خطأ','الملف لازم يكون صورة','err'); return; }
+if(f.size>6*1024*1024){ LAB.toast('خطأ','الصورة كبيرة (أقصى 6 ميجا)','err'); return; }
+LAB.fileToDataURL(f,1200,.75,function(u){
+rxFiles.push(u);
+pv.appendChild(LAB.el('div',{class:'thumb'},[
+LAB.el('img',{src:u}),
+LAB.el('button',{class:'del',html:'×',onclick:function(e){e.stopPropagation();rxFiles.splice(rxFiles.indexOf(u),1);this.parentElement.remove();}})
+]));
+});
+});
+}
+/* إرسال */
+$('#sendRx').onclick=function(){
+var name=String($('#rxName').value||'').trim();
+var phone=LAB.validatePhone($('#rxPhone').value);
+if(name.length<3){ LAB.toast('مطلوب','اكتب اسمك','warn'); return; }
+if(!phone){ LAB.toast('خطأ','رقم الواتساب غير صحيح','err'); return; }
+if(!rxFiles.length){ LAB.toast('مطلوب','ارفع صورة الروشتة','warn'); return; }
+d.counters.prescription=(d.counters.prescription||0)+1;
+var rec={ id:LAB.uid(), code:'RX-'+d.counters.prescription, name:name, phone:phone,
+doctor:$('#rxDoc').value||'', notes:$('#rxNotes').value||'', images:rxFiles.slice(),
+status:'new', tests:[], quoted:0, reply:'', createdAt:new Date().toISOString() };
+d.prescriptions.unshift(rec);
+LAB.notify('روشتة جديدة',rec.code+' — '+name,'rx','admin');
+LAB.notify('روشتة جديدة',rec.code+' — '+name,'rx','doctor');
+LAB.log('روشتة جديدة '+rec.code);
+LAB.save();
+LAB.modal({title:' تم إرسال الروشتة',html:
+'<div class="center"><div style="font-size:56px"></div><h3 class="mt-1">رقم الروشتة: <span class="grad-text">'+rec.code+'</span></h3>'+
+'<p class="lead mt-1">الدكاترة هيشوفوا الروشتة دلوقتي وهنبعتلك التحاليل المطلوبة والسعر على واتساب <b dir="ltr">'+phone+'</b> في أقرب وقت.</p>'+
+'<p class="small mt-2">تقدر تتابع الحالة من تبويب «متابعة روشتة سابقة».</p></div>',
+buttons:[{text:'تمام'},{text:'احجز تحليل دلوقتي',cls:'btn-primary',action:function(){location.href='booking.html';}}]});
+rxFiles=[]; pv.innerHTML=''; $('#rxName').value=''; $('#rxPhone').value=''; $('#rxNotes').value='';
+};
+/* المحلل الذكي */
+var ALIAS = {
+'cbc':'صورة دم كاملة CBC','fbc':'صورة دم كاملة CBC','cbc.':'صورة دم كاملة CBC','hb':'صورة دم كاملة CBC',
+'fbs':'سكر صائم FBS',' fasting blood sugar':'سكر صائم FBS','rbs':'سكر عشوائي RBS','ppbs':'سكر فاطري / بعد الأكل 2س PPBS',
+'hba1c':'سكر تراكمي HbA1c','a1c':'سكر تراكمي HbA1c','hba1':'سكر تراكمي HbA1c',
+'urea':'يوريا Urea','bun':'نيتروجين اليوريا BUN','creatinine':'كرياتينين Creatinine','creat':'كرياتينين Creatinine',
+'uric acid':'حمض اليوريك Uric Acid','uric':'حمض اليوريك Uric Acid','urea.':'يوريا Urea',
+'alt':'ALT (GPT)','gpt':'ALT (GPT)','ast':'AST (GOT)','got':'AST (GOT)','alp':'فوسفاتاز قلوي ALP','ggt':'GGT','ldh':'LDH',
+'bilirubin':'البيليروبين الكلي Total Bilirubin','albumin':'ألبومين Albumin','alb':'ألبومين Albumin',
+'total protein':'بروتين كلي Total Protein','pt':'زمن البروثرومبين PT/INR','inr':'زمن البروثرومبين PT/INR',
+'cholesterol':'كوليسترول كلي','tg':'دهون ثلاثية TG','triglycerides':'دهون ثلاثية TG','triglyceride':'دهون ثلاثية TG',
+'hdl':'HDL','ldl':'LDL','vldl':'VLDL','lipid':'كوليسترول كلي',
+'tsh':'TSH','t3':'T3','t4':'T4','free t3':'Free T3','free t4':'Free T4','ft3':'Free T3','ft4':'Free T4','anti-tpo':'Anti-TPO','tpo':'Anti-TPO',
+'prolactin':'برولاكتين Prolactin','prl':'برولاكتين Prolactin','cortisol':'كورتيزول Cortisol','testosterone':'تستوستيرون Testosterone',
+'fsh':'FSH','lh':'LH','amh':'AMH مخزون المبيض','progesterone':'بروجستيرون Progesterone','e2':'إستروجين E2','estradiol':'إستروجين E2',
+'vitamin d':'فيتامين D (25 OH)','vit d':'فيتامين D (25 OH)','vitamin b12':'فيتامين B12','b12':'فيتامين B12',
+'folic':'فوليك أسيد','ferritin':'تخزين حديد Ferritin','iron':'حديد Serum Iron','serum iron':'حديد Serum Iron','tibc':'TIBC سعة ارتباط الحديد',
+'zinc':'زنك Zinc','magnesium':'مغنيسيوم Mg','calcium':'كالسيوم Ca','phosphorus':'فوسفور Phosphorus','potassium':'بوتاسيوم K','sodium':'صوديوم Na',
+'crp':'CRP','esr':'ESR سرعة ترسيب','rf':'RF عامل روماتويد','aso':'ASO','ana':'ANA',
+'hbsag':'HBsAg','hcv':'HCV Ab','hepatitis b':'HBsAg','hepatitis c':'HCV Ab','hiv':'HIV 1&2',
+'urine analysis':'تحليل بول كامل Urine Analysis','urine':'تحليل بول كامل Urine Analysis','gue':'تحليل بول كامل Urine Analysis',
+'stool':'تحليل براز كامل','occult blood':'دم خفي في البراز','h.pylori':'هليكوباكتر (براز)','h pylori':'هليكوباكتر (براز)','helicobacter':'هليكوباكتر (براز)',
+'stool culture':'مزرعة براز','urine culture':'مزرعة بول + مضادات','culture':'مزرعة بول + مضادات',
+'psa':'PSA كلي','cea':'CEA','ca125':'CA 125','ca 125':'CA 125','ca15-3':'CA 15-3','ca 15-3':'CA 15-3','ca19-9':'CA 19-9','afp':'AFP',
+'beta hcg':'بيتا HCG رقمي (حمل)','bhcg':'بيتا HCG رقمي (حمل)','pregnancy test':'تحليل حمل رقمي β-hCG','hcg':'تحليل حمل رقمي β-hCG',
+'semen':'تحليل سائل منوي Semen Analysis','sfa':'تحليل سائل منوي Semen Analysis',
+'d-dimer':'D-Dimer','ddimer':'D-Dimer','troponin':'Troponin I (قلب)','ck-mb':'CK-MB','ckmb':'CK-MB','cpk':'CPK',
+'amylase':'أميليز Amylase','lipase':'ليبيز Lipase','pcr':'PCR HCV (فيروس سي)',
+'صورة دم':'صورة دم كاملة CBC','سكر صايم':'سكر صائم FBS','سكر صائم':'سكر صائم FBS','تراكمي':'سكر تراكمي HbA1c',
+'دهون':'كوليسترول كلي','كوليسترول':'كوليسترول كلي','كلى':'كرياتينين Creatinine','كبد':'ALT (GPT)','بول':'تحليل بول كامل Urine Analysis',
+'براز':'تحليل براز كامل','غدة':'TSH','درقية':'TSH','فيتامين دال':'فيتامين D (25 OH)','فيتامين د':'فيتامين D (25 OH)',
+'حديد':'حديد Serum Iron','انيميا':'صورة دم كاملة CBC','سرعة ترسيب':'ESR سرعة ترسيب','روماتويد':'RF عامل روماتويد',
+'حمل':'تحليل حمل رقمي β-hCG','خصوبة':'AMH مخزون المبيض','سائل منوي':'تحليل سائل منوي Semen Analysis'
+};
+function analyze(text){
+var t=(' '+String(text||'').toLowerCase().replace(/[،,;:.]/g,' ')+' ');
+var found={}, byAlias={};
+Object.keys(ALIAS).forEach(function(k){
+if(t.indexOf(k)<0) return;
+var target=ALIAS[k];
+var test=d.tests.filter(function(x){return x.name===target&&x.active;})[0];
+if(test&&!found[test.name]){ found[test.name]=test; byAlias[test.name]=k; }
+});
+// مطابقة مباشرة بأسماء التحاليل
+d.tests.forEach(function(x){
+if(!x.active) return;
+var nm=x.name.toLowerCase();
+var first=nm.split(' ')[0];
+if(first.length>=5 && t.indexOf(first)>=0 && !found[x.name]) found[x.name]=x;
+else if(t.indexOf(nm)>=0 && !found[x.name]) found[x.name]=x;
+});
+return Object.keys(found).map(function(k){return found[k];});
+}
+$('#analyzeBtn').onclick=function(){
+var txt=$('#rxText').value;
+if(!txt.trim()){ LAB.toast('مطلوب','اكتب أو الصق نص الروشتة','warn'); return; }
+var res=analyze(txt), w=$('#analyzeRes'); w.innerHTML='';
+if(!res.length){
+w.innerHTML='<div class="empty"><span class="ic"></span>ما قدرناش نطابق التحاليل تلقائياً.<br>ارفع صورة الروشتة وهنحددها لك يدوياً خلال دقائق.</div>';
+return;
+}
+var total=res.reduce(function(a,b){return a+b.price;},0);
+w.appendChild(LAB.el('div',{class:'card',style:'padding:20px'},[
+LAB.el('h4',{html:' تم التعرف على '+res.length+' تحليل'}),
+LAB.el('div',{class:'mt-2'}, res.map(function(t){
+return LAB.el('div',{class:'sum-line'},[
+LAB.el('span',{html:(t.fasting?' ':'')+LAB.escapeHtml(t.name)}),
+LAB.el('b',{html:LAB.money(t.price)+' ج'})
+]);
+})),
+LAB.el('div',{class:'sum-total'},[LAB.el('span',{html:'الإجمالي التقديري'}),LAB.el('span',{style:'color:var(--teal)',html:LAB.money(total)+' ج'})]),
+LAB.el('div',{class:'row mt-2'},[
+LAB.el('button',{class:'btn btn-primary',html:'احجزهم دلوقتي',onclick:function(){
+Cart.clear(); res.forEach(function(t){ Cart.add(t.name); }); location.href='booking.html';
+}}),
+LAB.el('button',{class:'btn btn-ghost',html:'إرسال للمعمل للمراجعة',onclick:function(){
+$$('.tab')[0].click();
+$('#rxNotes').value='تحاليل مقترحة من التحليل الذكي: '+res.map(function(t){return t.name;}).join('، ');
+LAB.toast('جاهز','أكمل بياناتك وارفع صورة الروشتة','ok');
+}})
+]),
+LAB.el('p',{class:'small mt-2',html:' الأسعار تقديرية — السعر النهائي بيتأكد بعد مراجعة الدكتور للروشتة.'})
+]));
+};
+/* متابعة */
+$('#fxBtn').onclick=function(){
+var p=LAB.validatePhone($('#fxPhone').value);
+if(!p){ LAB.toast('خطأ','رقم غير صحيح','err'); return; }
+var list=d.prescriptions.filter(function(r){return r.phone===p;});
+var w=$('#fxRes'); w.innerHTML='';
+if(!list.length){ w.innerHTML='<div class="empty"><span class="ic"></span>مفيش روشتات مسجلة بهذا الرقم</div>'; return; }
+list.forEach(function(r){
+var st={'new':['جديد ','b-wait'],'reviewing':['تحت المراجعة ','b-prog'],'quoted':['تم التسعير ','b-new'],'done':['تم الحجز ','b-done'],'rejected':['مرفوض ','b-cancel']}[r.status]||['جديد','b-wait'];
+w.appendChild(LAB.el('div',{class:'card',style:'padding:18px;margin-bottom:12px'},[
+LAB.el('div',{class:'row-between'},[
+LAB.el('b',{html:' '+r.code}),
+LAB.el('span',{class:'badge '+st[1],html:st[0]})
+]),
+LAB.el('div',{class:'small mt-1',html:' '+LAB.ago(r.createdAt)+(r.doctor?' — '+LAB.escapeHtml(r.doctor):'')}),
+r.tests&&r.tests.length?LAB.el('div',{class:'mt-1',html:'<b>التحاليل:</b> '+r.tests.map(LAB.escapeHtml).join('، ')}):null,
+r.quoted?LAB.el('div',{class:'mt-1',style:'font-weight:900;color:var(--teal);font-size:18px',html:'السعر: '+LAB.money(r.quoted)+' ج'}):null,
+r.reply?LAB.el('div',{class:'small mt-1',html:' '+LAB.escapeHtml(r.reply)}):null,
+r.status==='quoted'?LAB.el('a',{href:'booking.html',class:'btn btn-sm btn-primary mt-2',html:'احجز بالسعر المعروض'}):null
+]));
+});
+};
+/* باقات */
+var pw=$('#rxPkgs');
+d.packages.filter(function(p){return p.active;}).slice(0,4).forEach(function(p){
+pw.appendChild(LAB.el('a',{href:'booking.html?pkg='+p.id,class:'sum-line',style:'display:flex;justify-content:space-between'},[
+LAB.el('span',{html:' '+LAB.escapeHtml(p.name)}),LAB.el('b',{style:'color:var(--teal)',html:LAB.money(p.price)+' ج'})
+]));
+});
+LAB.initFX();
+})();
+</script>
+</body>
+</html>
