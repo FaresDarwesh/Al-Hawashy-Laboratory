@@ -140,7 +140,7 @@ return '<button class="dot" data-i="' + k + '" style="width:11px;height:11px;bor
 LAB.$$('.dot', dots).forEach(function (d) { d.onclick = function () { i = +d.dataset.i; render(); }; });
 }
 render();
-setInterval(function () { i = (i + 1) % offs.length; render(); }, 6000);
+setInterval(function () { if (document.hidden) return; i = (i + 1) % offs.length; render(); }, 7000);
 }
 /* ---------------- Notifications bell (for dashboards) ---------------- */
 function notifBell(container, role) {

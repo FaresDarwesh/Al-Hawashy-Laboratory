@@ -906,7 +906,7 @@ win.document.write('<html dir="rtl"><head><meta charset="utf-8"><title>بوست�
 '<div class="c"><div>' + LAB.qr(LAB.siteURL() + 'prescription.html', 150) + '</div><p class="big">ارفع الروشتة</p><p>واعرف السعر فوراً</p></div>' +
 '</div>' +
 '<div style="margin-top:24px"><h2 style="color:#0e7c86;font-size:20px">فروعنا</h2>' + brs + '</div>' +
-'<p style="margin-top:18px"> خدمة السحب المنزلي لكل الدقهلية | دفع كاش أو انستا باي | نتائج في نفس اليوم</p>' +
+'<p style="margin-top:18px"> خدمة السحب المنزلي | دفع كاش أو انستا باي | نتائج في نفس اليوم</p>' +
 '<script>window.onload=function(){setTimeout(function(){window.print()},600)}<\/script></body></html>');
 win.document.close();
 }

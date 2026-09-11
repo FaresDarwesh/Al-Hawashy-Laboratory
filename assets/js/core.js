@@ -140,7 +140,7 @@ labName: 'معمل الحوشي للتحاليل الطبية',
 labShort: 'الحوشي',
 ownerName: 'د. محمد الحوشي',
 ownerTitle: 'ماجستير التحاليل الطبية',
-ownerBio: 'خبرة تزيد عن 15 عاماً في مجال التحاليل الطبية والإشراف على معامل التحاليل، مع اعتماد أحدث أجهزة التحليل العالمية لضمان أدق النتائج في أسرع وقت.',
+ownerBio: 'خبرة تزيد عن 7 سنوات في مجال التحاليل الطبية والإشراف على معامل التحاليل، مع اعتماد أحدث أجهزة التحليل العالمية لضمان أدق النتائج في أسرع وقت.',
 phones: ['01023290567'],
 whatsapp: '201023290567',
 instapay: '01010168622',
@@ -477,8 +477,13 @@ if (n.href === here) a.className = 'active';
 nav.appendChild(a);
 });
 var actions = el('div', { class: 'header-actions' }, [
-el('a', { href: 'tel:' + s.phones[0], class: 'btn btn-primary btn-sm no-print', html: ' ' + escapeHtml(s.phones[0]) }),
-el('button', { class: 'burger', onclick: function () { $('#mobileNav').classList.toggle('open'); }, html: '' })
+el('a', { href: 'tel:' + s.phones[0], class: 'btn btn-primary btn-sm no-print', html: icon('phone', 16) + ' ' + escapeHtml(s.phones[0]) }),
+el('button', {
+class: 'theme-btn no-print', title: 'تبديل الوضع الليلي / النهاري', 'aria-label': 'تبديل الوضع',
+html: '<span class="ic-moon">' + icon('moon', 19) + '</span><span class="ic-sun">' + icon('sun', 19) + '</span>',
+onclick: function () { toggleTheme(); }
+}),
+el('button', { class: 'burger', onclick: function () { $('#mobileNav').classList.toggle('open'); }, html: '<i></i><i></i><i></i>' })
 ]);
 inner.appendChild(logo); inner.appendChild(nav); inner.appendChild(actions);
 header.appendChild(inner);
@@ -495,14 +500,19 @@ var prog = el('div', { id: 'progress' }, [el('div')]);
 document.body.appendChild(prog);
 var tkItems = [];
 db().branches.forEach(function (b) { if (b.active !== false) tkItems.push(['pin', b.name]); });
-db().areas.slice(0, 6).forEach(function (a) { tkItems.push(['home', 'سحب منزلي - ' + a.name + ' (' + a.fee + ' جنيه)']); });
-tkItems.push(['card', 'دفع انستا باي ' + s.instapay]);
-tkItems.push(['chat', 'واتساب ' + s.phones[0]]);
+db().areas.slice(0, 7).forEach(function (a) { tkItems.push(['home', 'سحب منزلي - ' + a.name]); });
+tkItems.push(['card', 'دفع انستا باي', 'mini']);
+tkItems.push(['card', s.instapay, 'mini']);
+tkItems.push(['chat', 'واتساب المعمل', 'mini']);
+tkItems.push(['chat', s.phones[0], 'mini']);
 tkItems.push(['bolt', 'نتائج في نفس اليوم']);
 var tk = el('div', { class: 'ticker-track' });
 for (var _r = 0; _r < 2; _r++) {
 tkItems.forEach(function (it) {
-tk.appendChild(el('span', { html: icon(it[0], 13) + '<span>' + escapeHtml(it[1]) + '</span>' }));
+tk.appendChild(el('span', {
+class: it[2] === 'mini' ? 'mini' : '',
+html: icon(it[0], 13) + '<span>' + escapeHtml(it[1]) + '</span>'
+}));
 });
 }
 document.body.appendChild(el('div', { class: 'ticker' }, [tk]));
@@ -548,7 +558,7 @@ el('span', { html: ' ' + escapeHtml(s.workFrom) + ' - ' + escapeHtml(s.workTo) +
 ])
 ]));
 fc.appendChild(fg);
-fc.appendChild(el('div', { class: 'footer-bottom', html: '© ' + new Date().getFullYear() + ' ' + escapeHtml(s.labName) + ' — جميع الحقوق محفوظة.' }));
+fc.appendChild(el('div', { class: 'footer-bottom', html: '© ' + new Date().getFullYear() + ' ' + escapeHtml(s.labName) + ' — جميع الحقوق محفوظة. <a href="privacy.html" style="margin-inline-start:10px">سياسة الخصوصية</a>' }));
 f.appendChild(fc);
 document.body.appendChild(f);
 // أزرار عائمة
@@ -570,17 +580,24 @@ navigator.serviceWorker.register('sw.js').catch(function () { });
 } catch (e) { }
 var ic = $('#themeIcon'); if (ic) ic.textContent = '';
 }
+function currentTheme() {
+var t = document.documentElement.getAttribute('data-theme');
+return t === 'dark' ? 'dark' : 'light';
+}
 function toggleTheme() {
-var cur = document.documentElement.getAttribute('data-theme');
-var next = cur === 'dark' ? 'light' : 'dark';
+var next = currentTheme() === 'dark' ? 'light' : 'dark';
 document.documentElement.setAttribute('data-theme', next);
 lsSet('theme', next);
-var ic = $('#themeIcon'); if (ic) ic.textContent = next === 'dark' ? '' : '';
-window.dispatchEvent(new CustomEvent('themechange', { detail: next }));
+try { window.dispatchEvent(new CustomEvent('themechange', { detail: next })); } catch (e) {}
+var m = document.querySelector('meta[name="theme-color"]');
+if (m) m.setAttribute('content', next === 'dark' ? '#04101c' : '#0e7490');
 }
 function initTheme() {
-var t = 'dark';
+var saved = lsGet('theme');
+var t = (saved === 'dark' || saved === 'light') ? saved : 'light'; /* الافتراضي: نهاري */
 document.documentElement.setAttribute('data-theme', t);
+var m = document.querySelector('meta[name="theme-color"]');
+if (m) m.setAttribute('content', t === 'dark' ? '#04101c' : '#0e7490');
 }
 /* ---------------- Reveal & counters & ripple ---------------- */
 function initFX() {
@@ -629,9 +646,14 @@ watchIcons();
 document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { var m = $('.modal-backdrop'); if (m) m.remove(); document.body.style.overflow = ''; } });
 }
 /* ---------------- Particles ---------------- */
+var REDUCED = (typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches);
 function initParticles(canvas) {
 if (!canvas) return;
-var ctx = canvas.getContext('2d'), W, H, dots = [], mouse = { x: -999, y: -999 };
+/* تخطي الجزيئات على الأجهزة الضعيفة/الشاشات الصغيرة — بيمنع تهنيج الصفحة */
+var smallScreen = (window.innerWidth || 1024) < 700;
+var weakDevice = (navigator.hardwareConcurrency || 4) <= 2;
+if (REDUCED || smallScreen || weakDevice) { canvas.style.display = 'none'; return; }
+var ctx = canvas.getContext('2d'), W, H, dots = [], mouse = { x: -999, y: -999 }, running = true;
 function size() {
 var r = canvas.getBoundingClientRect(), dpr = window.devicePixelRatio || 1;
 W = canvas.width = r.width * dpr; H = canvas.height = r.height * dpr;
@@ -639,10 +661,11 @@ ctx.setTransform(dpr, 0, 0, dpr, 0, 0); W /= dpr; H /= dpr;
 }
 function build() {
 dots = [];
-var n = Math.min(90, Math.round((W * H) / 16000));
+var n = Math.min(48, Math.round((W * H) / 34000));
 for (var i = 0; i < n; i++) dots.push({ x: Math.random() * W, y: Math.random() * H, vx: (Math.random() - .5) * .34, vy: (Math.random() - .5) * .34, r: Math.random() * 2.3 + .9 });
 }
 function tick() {
+if (document.hidden) { requestAnimationFrame(tick); return; }
 ctx.clearRect(0, 0, W, H);
 var dark = document.documentElement.getAttribute('data-theme') === 'dark';
 var c1 = dark ? '34,211,238' : '14,124,134';
@@ -728,7 +751,9 @@ logout: '<path d="M15 4.5h3.5a1.5 1.5 0 0 1 1.5 1.5v12a1.5 1.5 0 0 1-1.5 1.5H15"
 coupon: '<path d="M3.5 8.5A2 2 0 0 1 5.5 6.5h13a2 2 0 0 1 2 2v1a2.2 2.2 0 0 0 0 5v1a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2v-1a2.2 2.2 0 0 0 0-5z"/><path d="M12 8.5v7"/>',
 stethoscope: '<path d="M6 3.5v5a4 4 0 0 0 8 0v-5"/><path d="M10 12.5v2.5a5 5 0 0 0 10 0v-1.7"/><circle cx="20" cy="11.3" r="2"/>',
 micro: '<circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M6 6l2 2M16 16l2 2M18 6l-2 2M8 16l-2 2"/>',
-eye: '<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/>'
+eye: '<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/>',
+moon: '<path d="M20.5 14.2A8.6 8.6 0 0 1 9.8 3.5a8.6 8.6 0 1 0 10.7 10.7z"/>',
+sun: '<circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6"/>'
 };
 function icon(name, size, color) {
 var d = ICONS[name];
@@ -777,9 +802,23 @@ else if (a.querySelectorAll) hydrateIcons(a);
 mo.observe(document.body, { childList: true, subtree: true });
 } catch (e) {}
 }
-var _icTimer = setInterval(function () { hydrateIcons(document); }, 700);
-setTimeout(function () { clearInterval(_icTimer); }, 12000);
+/* تشغيلات قليلة بعد التحميل + عند أي تغيير (بدل interval طويل يستهلك المعالج) */
+[150, 700, 2000].forEach(function (ms) { setTimeout(function () { hydrateIcons(document); }, ms); });
+document.addEventListener('load', function () { hydrateIcons(document); }, true);
 }
+/* ---------------- حماية من الأخطاء المفاجئة ---------------- */
+var ERR_COUNT = 0;
+window.addEventListener('error', function (e) {
+ERR_COUNT++;
+if (ERR_COUNT <= 3 && typeof toast === 'function') {
+try { toast('تنبيه', 'حصلت مشكلة بسيطة في الصفحة — أكمل عادي أو حدّث الصفحة', 'warn'); } catch (x) {}
+}
+try { console.warn('[LAB] خطأ:', e.message); } catch (x) {}
+}, true);
+window.addEventListener('unhandledrejection', function (e) {
+try { console.warn('[LAB] وعد فاشل:', (e.reason && e.reason.message) || e.reason); } catch (x) {}
+});
+
 /* ---------------- Export ---------------- */
 global.$ = $;
 global.$$ = $$;
@@ -791,7 +830,7 @@ fileToDataURL: fileToDataURL, downloadBlob: downloadBlob, copyText: copyText,
 log: log, notify: notify, buildShell: buildShell, initFX: initFX, initParticles: initParticles,
 qr: qr, trackURL: trackURL, siteURL: siteURL, baseURL: baseURL, icon: icon, ICONS: ICONS,
 hydrateIcons: hydrateIcons, watchIcons: watchIcons, stars: stars,
-toggleTheme: toggleTheme, initTheme: initTheme,
+toggleTheme: toggleTheme, initTheme: initTheme, currentTheme: currentTheme,
 validatePhone: validatePhone, required: required,
 uid: uid, $: $, $$: $$, el: el, money: money, fmtDate: fmtDate, ago: ago, escapeHtml: escapeHtml,
 clone: clone, dstr: dstr, pad: pad
