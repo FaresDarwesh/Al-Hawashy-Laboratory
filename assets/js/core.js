@@ -150,6 +150,7 @@ address: 'برج النور الحمص',
 workFrom: '08:00', workTo: '23:00',
 closedDays: [5], // الجمعة
 homeServiceEnabled: true,
+lockMinutes: 20,
 homeBaseFee: 50,
 slotMinutes: 30,
 about: 'معمل الحوشي للتحاليل الطبية - فرعين لخدمتكم في الدقهلية. نقدم خدمات التحاليل الطبية الشاملة بأحدث الأجهزة، مع خدمة السحب المنزلي ونتائج دقيقة تُسلَّم في نفس اليوم.',
@@ -806,6 +807,53 @@ mo.observe(document.body, { childList: true, subtree: true });
 [150, 700, 2000].forEach(function (ms) { setTimeout(function () { hydrateIcons(document); }, ms); });
 document.addEventListener('load', function () { hydrateIcons(document); }, true);
 }
+/* ---------------- قفل تلقائي لحماية بيانات المرضى ---------------- */
+var LAST_ACT = Date.now();
+function touchAct() { LAST_ACT = Date.now(); }
+['click', 'keydown', 'touchstart', 'scroll', 'mousemove'].forEach(function (ev) {
+document.addEventListener(ev, touchAct, { passive: true });
+});
+setInterval(function () {
+try {
+var s = getSession();
+if (!s || (s.role !== 'admin' && s.role !== 'doctor')) return;
+var mins = Number((db().settings && db().settings.lockMinutes) || 20);
+if (mins <= 0) return;
+if (Date.now() - LAST_ACT > mins * 60000) {
+logout();
+toast('تم قفل الجلسة', 'لحماية بيانات المرضى — سجّل الدخول مرة أخرى', 'warn');
+setTimeout(function () { location.href = (s.role === 'admin' ? 'admin.html' : 'doctor.html'); }, 1500);
+}
+} catch (e) {}
+}, 60000);
+
+/* كارت إعدادات الأمان (بيظهر في الإعدادات) */
+function securityCard() {
+var st = db().settings;
+return el('div', { class: 'card', style: 'padding:24px;max-width:860px;margin-top:18px' }, [
+el('h4', { html: icon('shield', 18) + ' الأمان وحماية بيانات المرضى' }),
+el('p', { class: 'small', html: 'بيانات المرضى (أسماء، أرقام، عناوين، نتائج، روشتات) بيانات حساسة — الإعدادات دي بتقلل المخاطر على الأجهزة اللي بتفتح اللوحة.' }),
+el('div', { class: 'field mt-2' }, [
+el('label', { html: 'قفل اللوحة تلقائياً بعد (دقيقة)' }),
+el('select', { class: 'select', id: 'lockMin', onchange: function () {
+db().settings.lockMinutes = Number(this.value) || 0; save();
+toast('تم الحفظ', 'مدة القفل التلقائي: ' + (this.value === '0' ? 'معطّل' : this.value + ' دقيقة'), 'ok');
+} }, [0, 5, 10, 20, 30, 60].map(function (m) {
+return el('option', { value: String(m), selected: (st.lockMinutes || 20) === m, html: m === 0 ? 'معطّل (غير مُنصح به)' : m + ' دقيقة' });
+}))
+]),
+el('div', { class: 'small mt-2', html: ' نصيحة: خليها 10–20 دقيقة، وقفل المتصفح دايماً بعد الشغل.' }),
+el('div', { class: 'divider' }),
+el('div', { class: 'small', style: 'line-height:2' }, [
+el('b', { html: 'قواعد مهمة:' }),
+el('div', { html: '• متحطش مفتاح <b>service_role</b> أو <b>sb_secret_</b> في أي ملف أو في Vercel.' }),
+el('div', { html: '• متفتحش لوحة الأدمن على جهاز عام أو كمبيوتر بره المعمل.' }),
+el('div', { html: '• صدّر نسخة احتياطية مشفّرة واحتفظ بيها في مكان آمن (الإعدادات ▸ تصدير).' }),
+el('div', { html: '• امسح بيانات أي مريض يطلب ذلك — من شاشة المرضى.' })
+])
+]);
+}
+
 /* ---------------- حماية من الأخطاء المفاجئة ---------------- */
 var ERR_COUNT = 0;
 window.addEventListener('error', function (e) {
@@ -829,7 +877,7 @@ toast: toast, modal: modal, confirm: confirmBox,
 fileToDataURL: fileToDataURL, downloadBlob: downloadBlob, copyText: copyText,
 log: log, notify: notify, buildShell: buildShell, initFX: initFX, initParticles: initParticles,
 qr: qr, trackURL: trackURL, siteURL: siteURL, baseURL: baseURL, icon: icon, ICONS: ICONS,
-hydrateIcons: hydrateIcons, watchIcons: watchIcons, stars: stars,
+hydrateIcons: hydrateIcons, watchIcons: watchIcons, stars: stars, securityCard: securityCard,
 toggleTheme: toggleTheme, initTheme: initTheme, currentTheme: currentTheme,
 validatePhone: validatePhone, required: required,
 uid: uid, $: $, $$: $$, el: el, money: money, fmtDate: fmtDate, ago: ago, escapeHtml: escapeHtml,

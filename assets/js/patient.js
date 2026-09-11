@@ -30,7 +30,9 @@ if (!ph || !pw) { LAB.toast('مطلوب', 'أدخل الموبايل وكلمة 
 var p = d.patients.filter(function (x) { return x.phone === ph; })[0];
 if (!p) { LAB.toast('غير موجود', 'مفيش حساب بهذا الرقم — اعمل حساب جديد', 'err'); return; }
 if (p.password !== pw) { LAB.toast('خطأ', 'كلمة المرور غير صحيحة', 'err'); return; }
-LAB.setSession({ role: 'patient', id: p.id }); me = p; enter();
+LAB.setSession({ role: 'patient', id: p.id });
+if (LAB.cloud && LAB.cloud.serverLogin) LAB.cloud.serverLogin({ phone: ph, password: pw });
+me = p; enter();
 };
 $('#rgBtn').onclick = function () {
 var n = String($('#rgName').value || '').trim();
@@ -44,7 +46,9 @@ password: pw, age: $('#rgAge').value, gender: $('#rgGender').value,
 files: [], notes: [], createdAt: new Date().toISOString()
 };
 d.patients.push(p); LAB.save(); LAB.log('مريض جديد: ' + n);
-LAB.setSession({ role: 'patient', id: p.id }); me = p;
+LAB.setSession({ role: 'patient', id: p.id });
+if (LAB.cloud && LAB.cloud.serverLogin) LAB.cloud.serverLogin({ phone: ph, password: pw });
+me = p;
 LAB.toast('أهلاً بك ', 'تم إنشاء حسابك', 'ok'); enter();
 };
 $('#pLogout').onclick = function () { LAB.logout(); location.reload(); };

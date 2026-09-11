@@ -49,6 +49,7 @@ var p = $('#dcPass').value;
 var doc = d.doctors.filter(function (x) { return (x.username || '').toLowerCase() === u && x.password === p && x.active; })[0];
 if (!doc) { LAB.toast('خطأ', 'بيانات الدخول غير صحيحة أو الحساب موقوف', 'err'); return; }
 LAB.setSession({ role: 'doctor', id: doc.id });
+if (LAB.cloud && LAB.cloud.serverLogin) LAB.cloud.serverLogin({ username: u, password: p });
 LAB.log('دخول الطبيب: ' + doc.name);
 me = doc; start();
 };

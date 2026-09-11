@@ -48,6 +48,7 @@
       bucket: c.bucket || g.bucket || 'lab-files',
       projectId: c.projectId || g.projectId || '',
       apiKey: c.apiKey || g.apiKey || '',
+      mode: c.mode || g.mode || 'direct',
       enabled: c.enabled !== undefined ? !!c.enabled : !!g.enabled
     };
   }
@@ -58,7 +59,20 @@
       return r.text().then(function (t) { try { return t ? JSON.parse(t) : null; } catch (e) { return null; } });
     });
   }
-  function active() { var c = cfg(); return !!c.enabled && !!AD[c.provider] && AD[c.provider].ok(c); }
+  function mode() { return cfg().mode === 'server' ? 'server' : 'direct'; }
+  /* direct → المزوّد المختار (supabase/firebase) — server → طبقة /api */
+  function cur() {
+    if (mode() === 'server') return AD.server;
+    return AD[cfg().provider] || AD.supabase;
+  }
+  function active() {
+    var c = cfg();
+    if (!c.enabled) return false;
+    return !!cur() && cur().ok(c);
+  }
+  /* توكن الجلسة الآمنة (وضع السيرفر) */
+  function token() { try { return localStorage.getItem('elhoshy_cloud_token') || ''; } catch (e) { return ''; } }
+  function setToken(t) { try { t ? localStorage.setItem('elhoshy_cloud_token', t) : localStorage.removeItem('elhoshy_cloud_token'); } catch (e) { } }
 
   /* ------------------------------------------------------------------
      مفاتيح Supabase:
@@ -123,7 +137,59 @@
   };
 
   /* =======================================================================
-     2) مزوّد Firebase (Firestore + Cloud Storage)
+     2) مزوّد السيرفر الآمن (Vercel Serverless + مفتاح سرّي على السيرفر فقط)
+     -----------------------------------------------------------------------
+     المتصفح مبيعرفش أي مفتاح. كل حاجة بتمر على /api والسيرفر هو اللي
+     بيحدد مين يشوف إيه (مريض → بياناته بس، أدمن → كل حاجة).
+     ======================================================================= */
+  function apiPost(path, obj) {
+    return fetch(path, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: j(obj)
+    }).then(function (r) {
+      return r.text().then(function (t) {
+        var b = null;
+        try { b = t ? JSON.parse(t) : null; } catch (e) { b = null; }
+        /* صفحة HTML (404 من Vercel مثلًا) مش رد سليم — لازم نعتبره فشل */
+        if (/^\s*</.test(String(t || ''))) throw new Error('السيرفر /api مش موجود (404) — تأكد إن مجلد api مرفوع على Vercel');
+        if (!r.ok) throw new Error((b && b.error) ? b.error : ('HTTP ' + r.status));
+        return b || {};
+      });
+    }).then(function (res) { if (res && res.error) throw new Error(res.error); return res; });
+  }
+  AD.server = {
+    label: 'سيرفر آمن (Vercel)',
+    ok: function () { return true; },          /* مش محتاج مفاتيح في المتصفح */
+    pull: function (since) {
+      return apiPost('/api/data', { token: token(), since: since || 0, tables: TABLES.concat(['settings', 'counters', 'doctors']) })
+        .then(function (r) { return (r && r.rows) || []; });
+    },
+    push: function (rows) {
+      return apiPost('/api/write', { token: token(), rows: rows }).then(function () { return true; });
+    },
+    test: function () {
+      return apiPost('/api/data', { tables: ['tests'] }).then(function (r) { return !!(r && r.ok); });
+    },
+    upload: function (file, folder) {
+      return new Promise(function (resolve) {
+        var fr = new FileReader();
+        fr.onload = function () {
+          var b64 = String(fr.result || '').split(',')[1] || '';
+          fetch('/api/upload', {
+            method: 'POST',
+            headers: { 'x-token': token(), 'x-file': b64, 'x-name': file.name }
+          }).then(function (r) { return r.json(); })
+            .then(function (r) { resolve((r && r.url) || null); })
+            .catch(function () { resolve(null); });
+        };
+        fr.onerror = function () { resolve(null); };
+        fr.readAsDataURL(file);
+      });
+    },
+    hint: 'محتاج متغيرات بيئة على Vercel فقط'
+  };
+
+  /* =======================================================================
+     3) مزوّد Firebase (Firestore) — محوّل إضافي نايم
      ======================================================================= */
   function fsBase(c) {
     return 'https://firestore.googleapis.com/v1/projects/' + c.projectId + '/databases/(default)/documents';
@@ -311,11 +377,27 @@
   /* ---------------- السحب / الرفع ---------------- */
   var queue = Promise.resolve();
   function enqueue(fn) { queue = queue.then(fn).catch(function () { return 0; }); return queue; }
+
+  /* لو مجلد api مش مرفوع أو السيرفر واقع → ارجع للوضع المباشر تلقائياً بدل ما الموقع يفضل فاضي */
+  var _fellBack = false;
+  function fallBackToDirect(e) {
+    if (_fellBack || mode() !== 'server') return false;
+    var m = String((e && e.message) || e || '');
+    /* نرجع للوضع المباشر بس لو /api نفسه مش موجود أو مش قادر نوصل له —
+       أما خطأ صلاحيات أو ضغط طلبات فسيبه كما هو (مش عطل في الإعداد) */
+    if (!/404|NOT_FOUND|صفحة HTML|Failed to fetch|NetworkError|Unexpected token </.test(m)) return false;
+    _fellBack = true;
+    try { var st = LAB.db().settings; st.cloud = st.cloud || {}; st.cloud.mode = 'direct'; LAB.save(); } catch (x) { }
+    setStatus('err', 'السيرفر /api مش متاح (' + (/صفحة HTML|404|NOT_FOUND/.test(m) ? 'مجلد api مش مرفوع' : 'لا يوجد اتصال')
+      + ') — تم الرجوع للوضع المباشر. ' + m.slice(0, 60));
+    return true;
+  }
   function pull() { if (!active()) { setStatus('off'); return Promise.resolve(0); } return enqueue(_pull); }
   function push() { if (!active()) { setStatus('off'); return Promise.resolve(0); } return enqueue(_push); }
 
   function _pull() {
-    var c = cfg(), A = AD[c.provider];
+    if (!active()) { setStatus('off'); return Promise.resolve(0); }
+    var c = cfg(), A = cur();
     S.busy = true; setStatus('sync', 'جاري السحب…');
     return A.pull(S.meta.ts || 0).then(function (rows) {
       rows = rows || [];
@@ -353,12 +435,16 @@
       if (changed) { LAB.save(); }
       setStatus('ok', 'آخر مزامنة: ' + new Date().toLocaleTimeString('ar-EG'));
       return changed;
-    }).catch(function (e) { setStatus('err', 'تعذر السحب: ' + e.message); return 0; })
+    }).catch(function (e) {
+      if (fallBackToDirect(e)) return _pull();
+      setStatus('err', 'تعذر السحب: ' + e.message); return 0;
+    })
       .then(function (n) { S.busy = false; return n; });
   }
 
   function _push(retry) {
     /* لو لسه معملناش أول سحب: اعمله مرة واحدة بس (من غير تكرار لا نهائي لو السحب فشل) */
+    if (!active()) { setStatus('off'); return Promise.resolve(0); }
     if (!S.meta.booted) {
       if (retry) return Promise.resolve(0);
       return _pull().then(function () { return _push(true); });
@@ -366,20 +452,25 @@
     var d = diff(), body = d.up.concat(d.del);
     if (!body.length) { setStatus('ok'); return Promise.resolve(0); }
     S.busy = true; setStatus('sync', 'جاري الرفع (' + body.length + ')…');
-    return AD[cfg().provider].push(body).then(function () {
+    return cur().push(body).then(function () {
       d.up.forEach(function (r) { S.synced[rid(r.tbl, r.id)] = hash(j(r.data)); });
       d.del.forEach(function (r) { S.tombs[rid(r.tbl, r.id)] = r._u; });
       S.meta.lastPush = Date.now(); saveState();
       setStatus('ok', 'آخر رفع: ' + new Date().toLocaleTimeString('ar-EG'));
       return body.length;
-    }).catch(function (e) { setStatus('err', 'تعذر الرفع: ' + e.message); return 0; })
+    }).catch(function (e) {
+      if (fallBackToDirect(e)) return _push(true);
+      setStatus('err', 'تعذر الرفع: ' + e.message); return 0;
+    })
       .then(function (n) { S.busy = false; return n; });
   }
 
   function test() {
-    var c = cfg(), A = AD[c.provider];
+    var c = cfg(), A = cur();
     if (!A || !A.ok(c)) {
-      LAB.toast('بيانات ناقصة', 'ادخل Project URL و anon public key الأول', 'warn');
+      LAB.toast('بيانات ناقصة',
+        mode() === 'server' ? 'استضافة السيرفر غير جاهزة — راجع متغيرات البيئة على Vercel'
+          : 'ادخل Project URL و anon public key الأول', 'warn');
       return Promise.resolve(false);
     }
     return A.test().then(function () {
@@ -418,9 +509,17 @@
     var card = LAB.el('div', { class: 'card', id: 'cloudCard', style: 'padding:24px;max-width:860px;margin-top:18px' }, [
       LAB.el('h4', { html: LAB.icon('upload', 18) + ' الربط السحابي' }),
       LAB.el('p', { class: 'small', html: 'اربط الموقع بقاعدة بيانات سحابية علشان كل الحجوزات والنتائج تبان على كل الأجهزة فوراً، وتفضل محفوظة حتى لو اتمسحت بيانات المتصفح.' }),
+      LAB.el('div', { class: 'small mt-2', style: 'background:rgba(244,63,94,.10);border:1px solid rgba(244,63,94,.35);color:var(--red);border-radius:12px;padding:12px 14px;font-weight:700;line-height:1.9', html: LAB.icon('shield', 15) + ' تنبيه أمني: مفتاح anon/publishable بيدي صلاحية قراءة البيانات. متحطوش في ملف عام أو ترسلهوش لحد. لو هتنشر المفاتيح جوه الكود (supabase-config.js) يبقى لازم تقفل صلاحيات القراءة من جدول lab_data أو تعمل طبقة سيرفر — شوف ملف «الأمان-والخصوصية.md».' }),
       LAB.el('div', { class: 'field mt-2' }, [
-        LAB.el('label', { html: 'مزوّد الخدمة' }),
+        LAB.el('label', { html: 'قاعدة البيانات' }),
         LAB.el('input', { class: 'input', value: 'Supabase — قاعدة بيانات PostgreSQL سحابية', disabled: true })
+      ]),
+      LAB.el('div', { class: 'field' }, [
+        LAB.el('label', { html: 'طريقة الاتصال (مهم للأمان)' }),
+        LAB.el('select', { class: 'select', id: 'clMode', onchange: function () { renderCloudFields(); } }, [
+          LAB.el('option', { value: 'server', selected: c.mode === 'server', html: 'عبر السيرفر الآمن /api — الأأمن (مُوصى به)' }),
+          LAB.el('option', { value: 'direct', selected: c.mode !== 'server', html: 'مباشر من المتصفح (المفتاح بيبان للزوار)' })
+        ])
       ]),
       LAB.el('div', { id: 'clFields' }),
       LAB.el('div', { class: 'row mt-2', style: 'flex-wrap:wrap;gap:8px' }, [
@@ -429,9 +528,14 @@
             var st = LAB.db().settings, $ = LAB.$;
             st.cloud = st.cloud || {};
             st.cloud.provider = 'supabase';
-            st.cloud.url = (($('#clUrl') || {}).value || '').trim().replace(/\/+$/, '');
-            st.cloud.key = (($('#clKey') || {}).value || '').trim();
-            st.cloud.bucket = (($('#clBucket') || {}).value || '').trim() || 'lab-files';
+            st.cloud.mode = $('#clMode').value;
+            if (st.cloud.mode === 'direct') {
+              st.cloud.url = (($('#clUrl') || {}).value || '').trim().replace(/\/+$/, '');
+              st.cloud.key = (($('#clKey') || {}).value || '').trim();
+              st.cloud.bucket = (($('#clBucket') || {}).value || '').trim() || 'lab-files';
+            } else {
+              st.cloud.bucket = 'lab-files';
+            }
             st.cloud.enabled = $('#clOn').value === '1';
             LAB.save();
             test().then(function (ok) {
@@ -464,7 +568,15 @@
       if (!box) return;
       box.innerHTML = '';
       var rows = [];
-      if (false) {
+      var m = card.querySelector('#clMode').value;
+      if (m === 'server') {
+        rows = [
+          LAB.el('div', { class: 'small', style: 'background:rgba(34,197,94,.10);border:1px solid rgba(34,197,94,.35);color:var(--green);border-radius:12px;padding:12px 14px;line-height:1.9;font-weight:700',
+            html: LAB.icon('shield', 15) + ' الوضع الآمن: المتصفح مش بيشوف أي مفتاح — كل حاجة بتمر على /api والسيرفر هو اللي بيحدد المسموح. ' +
+                  'المفاتيح بتتحط مرة واحدة في Vercel: SUPABASE_URL و SUPABASE_SERVICE_KEY و APP_SECRET.' }),
+          LAB.el('div', { class: 'small mt-2', html: 'بعد الحفظ: سجّل خروج ودخول تاني من اللوحة علشان تاخد توكن صالح.' })
+        ];
+      } else if (false) {
         rows = [
           LAB.el('div', { class: 'field' }, [
             LAB.el('label', { html: 'Project ID' }),
@@ -532,7 +644,7 @@
   LAB.fileToDataURL = function (file, max, q, cb) {
     var c = cfg();
     if (active() && file && file.size > 350 * 1024) {
-      AD[c.provider].upload(file, 'uploads').then(function (url) {
+      cur().upload(file, 'uploads').then(function (url) {
         if (url) cb(url, file.name); else _f2d(file, max, q, cb);
       });
       return;
@@ -540,8 +652,20 @@
     return _f2d(file, max, q, cb);
   };
 
+  /* دخول آمن: السيرفر هو اللي بيتحقق وبيصدر توكن موقّع */
+  function serverLogin(creds) {
+    if (mode() !== 'server' || !cfg().enabled) return Promise.resolve(null);
+    return apiPost('/api/auth', creds).then(function (r) {
+      if (r && r.ok && r.token) { setToken(r.token); setStatus('ok'); }
+      return r;
+    }).catch(function () { return null; });
+  }
+  var _logout = LAB.logout;
+  LAB.logout = function () { setToken(''); return _logout.apply(null, arguments); };
+
   LAB.cloud = {
     boot: boot, pull: pull, push: push, test: test, settingsCard: settingsCard,
+    serverLogin: serverLogin, mode: mode,
     state: S, cfg: cfg, providers: AD,
     status: function () { return { status: S.status, msg: S.msg, meta: S.meta }; }
   };

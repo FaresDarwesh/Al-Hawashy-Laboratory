@@ -752,6 +752,7 @@ LAB.el('div', { class: 'small mt-2', html: ' نصيحة: صدّر نسخة اح�
 ]);
 w.appendChild(card);
 if (LAB.cloud && LAB.cloud.settingsCard) w.appendChild(LAB.cloud.settingsCard());
+if (LAB.securityCard) w.appendChild(LAB.securityCard());
 // صورة الدكتور
 var owner = d.doctors.filter(function (x) { return x.role === 'owner'; })[0];
 var zone = $('#sImg');

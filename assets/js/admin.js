@@ -63,6 +63,7 @@ var p = $('#adPass').value;
 var doc = d.doctors.filter(function (x) { return (x.username || '').toLowerCase() === u && x.password === p; })[0];
 if (!doc || doc.role !== 'owner') { LAB.toast('خطأ', 'بيانات الدخول غير صحيحة أو لا تملك صلاحية المدير', 'err'); return; }
 LAB.setSession({ role: 'admin', id: doc.id });
+if (LAB.cloud && LAB.cloud.serverLogin) LAB.cloud.serverLogin({ username: u, password: p });
 LAB.log('دخول المدير: ' + doc.name);
 start();
 };

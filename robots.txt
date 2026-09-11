@@ -2,5 +2,6 @@ User-agent: *
 Allow: /
 Disallow: /admin.html
 Disallow: /doctor.html
+Disallow: /api/
 
-Sitemap: https://elhoshy-lab.vercel.app/sitemap.xml
+Sitemap: https://al-hawashy-laboratory.vercel.app/sitemap.xml
