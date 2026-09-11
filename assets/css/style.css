@@ -1,47 +1,47 @@
 /* ===========================================================
    معمل الحوشي للتحاليل الطبية — Design System
    =========================================================== */
-:root{
-  /* نصوص وألوان أساسية — الوضع النهاري */
-  --navy:#06283d;
-  --navy-2:#0e4c66;
-  --teal:#0e7490;
-  --teal-2:#14b8c4;
+  :root{
+  /* نصوص وألوان أساسية — الوضع النهاري (افتراضي) */
+  --navy:#0a2b41;
+  --navy-2:#0f4d68;
+  --teal:#0d7f9c;
+  --teal-2:#12b5c2;
   --cyan:#0891b2;
   --gold:#b45309;
   --gold-2:#f59e0b;
-  --green:#16a34a;
+  --green:#12a150;
   --red:#e11d48;
   --purple:#7c3aed;
   --ink:#0b2436;
-  --muted:#6b8496;
-  --line:#d8e8f1;
-  --bg:#f4fafe;
-  --bg-2:#e8f3f9;
+  --muted:#6a8699;
+  --line:#dceaf4;
+  --bg:#f7fbfe;
+  --bg-2:#eaf4fa;
   --card:#ffffff;
   --text:#0b2436;
-  --text-soft:#5c758a;
+  --text-soft:#57758c;
   --surface-2:#06283d;
   --input-bg:#ffffff;
-  --glass:rgba(255,255,255,.92);
-  --header-bg:rgba(255,255,255,.82);
-  --hero-bg:linear-gradient(180deg,#e6f4fa 0%,#f4fafe 100%);
-  --hero-glowA:rgba(20,184,196,.16);
-  --hero-glowB:rgba(14,116,144,.16);
-  --ticker-bg:linear-gradient(90deg,#06283d,#0e7490,#06283d);
-  --footer-bg:linear-gradient(180deg,#06283d 0%,#0e4c66 100%);
-  --sidebar-bg:linear-gradient(170deg,#06283d 0%,#0e4c66 60%,#0e7490 130%);
-  --eyebrow-bg:linear-gradient(135deg,rgba(14,116,144,.10),rgba(8,145,178,.07));
-  --eyebrow-line:rgba(14,116,144,.28);
-  --th-bg:rgba(14,116,144,.08);
+  --glass:rgba(255,255,255,.90);
+  --header-bg:rgba(255,255,255,.80);
+  --hero-bg:linear-gradient(180deg,#e9f6fb 0%,#f7fcfe 62%,#f7fbfe 100%);
+  --hero-glowA:rgba(18,181,194,.18);
+  --hero-glowB:rgba(13,127,156,.16);
+  --ticker-bg:linear-gradient(90deg,#0a2b41,#0d7f9c,#0a2b41);
+  --footer-bg:linear-gradient(180deg,#0a2b41 0%,#0f4d68 100%);
+  --sidebar-bg:linear-gradient(170deg,#0a2b41 0%,#0f4d68 58%,#0d7f9c 130%);
+  --eyebrow-bg:linear-gradient(135deg,rgba(13,127,156,.10),rgba(8,145,178,.07));
+  --eyebrow-line:rgba(13,127,156,.28);
+  --th-bg:rgba(13,127,156,.07);
   --frame-border:#ffffff;
-  --shadow:0 10px 30px rgba(6,40,61,.10);
-  --shadow-lg:0 24px 60px rgba(6,40,61,.15);
+  --shadow:0 12px 32px rgba(8,58,80,.09);
+  --shadow-lg:0 26px 64px rgba(8,58,80,.16);
   --radius:18px;
   --radius-sm:12px;
-  --grad:linear-gradient(135deg,#0e7490 0%,#14b8c4 45%,#22d3ee 100%);
+  --grad:linear-gradient(135deg,#0d7f9c 0%,#12b5c2 45%,#22d3ee 100%);
   --grad-gold:linear-gradient(135deg,#f59e0b 0%,#fcd34d 100%);
-  --grad-dark:linear-gradient(135deg,#06283d 0%,#0e7490 100%);
+  --grad-dark:linear-gradient(135deg,#0a2b41 0%,#0d7f9c 100%);
   --header-h:78px;
   --font:"Segoe UI",Tahoma,"Helvetica Neue",Arial,"Noto Naskh Arabic","Times New Roman",sans-serif;
 }
@@ -747,3 +747,47 @@ body{padding-top:38px}
 /* أرقام أصغر جوه شريط الإعلانات */
 .ticker-track .mini{font-size:11.5px;opacity:.92;letter-spacing:.2px}
 .ticker-track .mini span{direction:ltr;unicode-bidi:isolate}
+
+/* ================= تحسينات الوضع النهاري (جماليات) ================= */
+html:not([data-theme="dark"]) body{
+  background:
+    radial-gradient(1200px 540px at 90% -10%, rgba(18,181,194,.10), transparent 60%),
+    radial-gradient(900px 460px at 4% 2%, rgba(13,127,156,.08), transparent 62%),
+    var(--bg);
+  background-attachment:fixed;
+}
+html:not([data-theme="dark"]) .site-header{backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+html:not([data-theme="dark"]) .card,
+html:not([data-theme="dark"]) .test-card,
+html:not([data-theme="dark"]) .review-card{border-color:#e7f1f8}
+html:not([data-theme="dark"]) .btn-primary{box-shadow:0 10px 24px rgba(13,127,156,.26)}
+html:not([data-theme="dark"]) .btn-primary:hover{box-shadow:0 16px 32px rgba(13,127,156,.34)}
+html:not([data-theme="dark"]) .btn-gold{box-shadow:0 10px 24px rgba(245,158,11,.28)}
+html:not([data-theme="dark"]) .summary,
+html:not([data-theme="dark"]) .chart-card{background:linear-gradient(180deg,#ffffff 0%,#fbfdff 100%)}
+html:not([data-theme="dark"]) .eyebrow{letter-spacing:.2px}
+html:not([data-theme="dark"]) h1,
+html:not([data-theme="dark"]) h2,
+html:not([data-theme="dark"]) h3{letter-spacing:-.2px}
+html:not([data-theme="dark"]) .stat,
+html:not([data-theme="dark"]) .kpi{background:linear-gradient(135deg,#ffffff 0%,#f4fafe 100%)}
+html:not([data-theme="dark"]) input:focus,
+html:not([data-theme="dark"]) select:focus,
+html:not([data-theme="dark"]) textarea:focus{box-shadow:0 0 0 4px rgba(13,127,156,.12)}
+
+/* ================= بوابات الدخول (أدمن / أطباء) ================= */
+.portal-card{display:flex;gap:18px;align-items:flex-start;background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:26px;text-decoration:none;color:inherit;
+  transition:.35s cubic-bezier(.2,.8,.2,1);box-shadow:var(--shadow)}
+.portal-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg);border-color:var(--teal)}
+.portal-card .portal-ic{width:64px;height:64px;min-width:64px;border-radius:18px;display:grid;place-items:center;
+  background:var(--grad);color:#fff;box-shadow:0 10px 24px rgba(13,127,156,.28)}
+.portal-card[data-portal="doctor"] .portal-ic{background:linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%);box-shadow:0 10px 24px rgba(124,58,237,.28)}
+.portal-card h3{margin-bottom:6px}
+.portal-card p{line-height:1.9}
+.portal-card .portal-btn{display:inline-flex;align-items:center;gap:7px;margin-top:12px;font-weight:800;color:var(--teal)}
+.portal-card[data-portal="doctor"] .portal-btn{color:var(--purple)}
+.portal-card .portal-btn svg{transform:scaleX(-1)}
+.portal-card:hover .portal-btn svg{transform:scaleX(-1) translateX(-4px)}
+html:not([data-theme="dark"]) .portal-card{background:linear-gradient(180deg,#ffffff 0%,#fbfdff 100%)}
+@media(max-width:620px){.portal-card{flex-direction:column;gap:14px}}

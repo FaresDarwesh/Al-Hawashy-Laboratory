@@ -867,6 +867,48 @@ window.addEventListener('unhandledrejection', function (e) {
 try { console.warn('[LAB] وعد فاشل:', (e.reason && e.reason.message) || e.reason); } catch (x) {}
 });
 
+
+/* ---------------- تحديث الموقع ومسح الكاش ---------------- */
+function wipeCaches() {
+  try {
+    if (window.caches && caches.keys) {
+      return caches.keys().then(function (ks) {
+        return Promise.all(ks.map(function (k) { return caches.delete(k); }));
+      }).catch(function () { });
+    }
+  } catch (e) { }
+  return Promise.resolve();
+}
+function clearSiteCache(then) {
+  try {
+    if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+      try { navigator.serviceWorker.controller.postMessage('clear'); } catch (e) { }
+    }
+    if (navigator.serviceWorker && navigator.serviceWorker.getRegistrations) {
+      navigator.serviceWorker.getRegistrations().then(function (regs) {
+        Promise.all((regs || []).map(function (r) {
+          return (r.unregister ? r.unregister() : Promise.resolve()).catch(function () { });
+        })).then(wipeCaches).then(function () { if (then) then(); });
+      }).catch(function () { wipeCaches().then(function () { if (then) then(); }); });
+      return;
+    }
+  } catch (e) { }
+  wipeCaches().then(function () { if (then) then(); });
+}
+/* لو الرابط فيه ?clear=1 → امسح كل حاجة وارجع للصفحة نضيفة */
+function urlHouseKeeping() {
+  try {
+    var q = location.search || '';
+    var m = q.match(/[?&]theme=(light|dark)/);
+    if (m) { lsSet('theme', m[1]); initTheme(); }
+    if (/[?&]clear=1/.test(q)) {
+      clearSiteCache(function () {
+        setTimeout(function () { location.replace(location.pathname + (q.indexOf('theme=') > -1 ? '?theme=' + (m ? m[1] : 'light') : '')); }, 400);
+      });
+    }
+  } catch (e) { }
+}
+
 /* ---------------- Export ---------------- */
 global.$ = $;
 global.$$ = $$;
@@ -878,10 +920,11 @@ fileToDataURL: fileToDataURL, downloadBlob: downloadBlob, copyText: copyText,
 log: log, notify: notify, buildShell: buildShell, initFX: initFX, initParticles: initParticles,
 qr: qr, trackURL: trackURL, siteURL: siteURL, baseURL: baseURL, icon: icon, ICONS: ICONS,
 hydrateIcons: hydrateIcons, watchIcons: watchIcons, stars: stars, securityCard: securityCard,
+clearSiteCache: clearSiteCache, wipeCaches: wipeCaches,
 toggleTheme: toggleTheme, initTheme: initTheme, currentTheme: currentTheme,
 validatePhone: validatePhone, required: required,
 uid: uid, $: $, $$: $$, el: el, money: money, fmtDate: fmtDate, ago: ago, escapeHtml: escapeHtml,
 clone: clone, dstr: dstr, pad: pad
 };
-if (typeof document !== 'undefined') initTheme();
+if (typeof document !== 'undefined') { initTheme(); try { urlHouseKeeping(); } catch (e) { } }
 })(window);

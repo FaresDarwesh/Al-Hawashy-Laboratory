@@ -7,7 +7,7 @@
 <meta name="description" content="معمل الحوشي للتحاليل الطبية — فرعين بالدقهلية. احجز تحليلك أونلاين، سحب منزلي، نتائج إلكترونية، دفع كاش أو انستا باي. ماجستير التحاليل الطبية د. محمد الحوشي.">
 <meta name="theme-color" content="#0e7c86">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230e7c86'/><text x='50' y='70' font-size='58' text-anchor='middle' fill='white' font-family='Arial'>حـ</text></svg>">
-<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/style.css?v=3">
 <link rel="manifest" href="manifest.json">
 </head>
 <body> <!-- ===== HERO ===== -->
@@ -35,12 +35,34 @@ LAB.save();LAB.log('تقييم جديد من '+n+' (بانتظار المراج�
 }},{text:'إلغاء'}]})"><i data-icon="edit"></i> اكتب رأيك</button> </div> </div>
 </section> <!-- ===== FAQ ===== -->
 <section class="section"> <div class="container" style="max-width:820px"> <div class="sec-head reveal"><span class="eyebrow"><i data-icon="chat"></i>الأسئلة الشائعة</span><h2 class="mt-2">كل اللي يدور في <span class="grad-text">بالك</span></h2></div> <div id="homeFaqs"></div> </div>
+</section> <!-- ===== بوابات فريق العمل: أدمن / أطباء ===== -->
+<section class="section" style="background:var(--bg-2)"> <div class="container">
+  <div class="sec-head reveal"><span class="eyebrow"><i data-icon="shield"></i>فريق العمل</span><h2 class="mt-2">بوابات <span class="grad-text">الدخول</span></h2><p>مخصص لإدارة المعمل والأطباء المتعاونين — مش للمرضى.</p></div>
+  <div class="grid g2">
+    <a href="admin.html" class="portal-card reveal" data-portal="admin">
+      <span class="portal-ic"><i data-icon="grid" data-size="30"></i></span>
+      <div>
+        <h3>بوابة الإدارة</h3>
+        <p class="small">لوحة المدير: الحجوزات والنتائج، المالية والمصروفات، التحاليل والباقات، الفروع والمناطق، مركز الرسائل والتقارير والسجلات.</p>
+        <span class="portal-btn"><i data-icon="arrow" data-size="17"></i> دخول الإدارة</span>
+      </div>
+    </a>
+    <a href="doctor.html" class="portal-card reveal" data-portal="doctor">
+      <span class="portal-ic"><i data-icon="stethoscope" data-size="30"></i></span>
+      <div>
+        <h3>بوابة الأطباء</h3>
+        <p class="small">لوحة الطبيب: حجوزات مرضاك، تسعير الكشف المنزلي لكل منطقة، الروشتات والاستلام، حساباتك ونسبك.</p>
+        <span class="portal-btn"><i data-icon="arrow" data-size="17"></i> دخول الأطباء</span>
+      </div>
+    </a>
+  </div>
+</div>
 </section> <!-- ===== CTA ===== -->
 <section class="section-sm"> <div class="container"> <div class="offer-slide reveal" style="background:var(--grad)"> <div class="row-between"> <div> <h3>جاهز تحجز تحليلك؟</h3> <p style="opacity:.92">الحجز أونلاين بياخد دقيقتين — ونتائجك بتوصلك في نفس اليوم.</p> </div> <div class="row"> <a href="booking.html" class="btn btn-gold btn-lg"><i data-icon="drop"></i>احجز الآن</a> <a href="contact.html" class="btn btn-outline btn-lg" style="border-color:#fff;color:#fff"><i data-icon="phone"></i>تواصل معنا</a> </div> </div> </div> </div>
-</section> <script src="assets/js/core.js"></script>
-<script src="assets/js/supabase-config.js"></script>
-<script src="assets/js/sync.js"></script>
-<script src="assets/js/shared.js"></script>
-<script src="assets/js/app.js"></script>
+</section> <script src="assets/js/core.js?v=3"></script>
+<script src="assets/js/supabase-config.js?v=3"></script>
+<script src="assets/js/sync.js?v=3"></script>
+<script src="assets/js/shared.js?v=3"></script>
+<script src="assets/js/app.js?v=3"></script>
 </body>
 </html>

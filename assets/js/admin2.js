@@ -751,6 +751,22 @@ LAB.resetDB(); location.reload();
 LAB.el('div', { class: 'small mt-2', html: ' نصيحة: صدّر نسخة احتياطية أسبوعياً — كل البيانات مخزّنة في متصفحك على هذا الجهاز.' })
 ]);
 w.appendChild(card);
+/* كارت صيانة الموقع: مسح الكاش وتحديث النسخة */
+w.appendChild(LAB.el('div', { class: 'card', style: 'padding:24px;max-width:860px;margin-top:18px' }, [
+LAB.el('h4', { html: LAB.icon('bolt', 18) + ' تحديث الموقع ومسح الكاش' }),
+LAB.el('p', { class: 'small', html: 'لو رفعت نسخة جديدة على Vercel والمتصفح لسه بيعرض نسخة قديمة (أو الأيقونات باينة ككود)، اضغط الزر تحت: هيمسح الكاش القديم ويحدّث الموقع فوراً.' }),
+LAB.el('div', { class: 'row mt-2', style: 'flex-wrap:wrap;gap:8px' }, [
+LAB.el('button', { class: 'btn btn-primary', html: LAB.icon('bolt', 16) + ' تحديث الموقع ومسح الكاش', onclick: function () {
+LAB.clearSiteCache(function () { location.replace(location.pathname + '?clear=1'); });
+} }),
+LAB.el('button', { class: 'btn btn-outline', html: LAB.icon('sun', 16) + ' اجعل الوضع النهاري الافتراضي', onclick: function () {
+try { localStorage.removeItem('theme'); } catch (e) { }
+LAB.toast('تم', 'الوضع النهاري هو الافتراضي الآن', 'ok');
+location.replace(location.pathname + '?theme=light&clear=1');
+} })
+]),
+LAB.el('div', { class: 'small mt-2', html: ' تقدر كمان تفتح أي صفحة وتضيف <b dir="ltr">?clear=1</b> في آخر الرابط — هيعمل نفس الحاجة.' })
+]));
 if (LAB.cloud && LAB.cloud.settingsCard) w.appendChild(LAB.cloud.settingsCard());
 if (LAB.securityCard) w.appendChild(LAB.securityCard());
 // صورة الدكتور
