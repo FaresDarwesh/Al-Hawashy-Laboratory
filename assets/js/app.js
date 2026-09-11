@@ -49,9 +49,9 @@ d.packages.filter(function (p) { return p.active; }).slice(0, 6).forEach(functio
 var bw = $('#homeBranches');
 d.branches.filter(function (b) { return b.active; }).forEach(function (b, i) {
 bw.appendChild(LAB.el('div', { class: 'card card-hover reveal', style: 'padding:28px;position:relative;overflow:hidden' }, [
-LAB.el('div', { style: 'position:absolute;inset-inline-end:-40px;top:-40px;width:150px;height:150px;border-radius:50%;background:rgba(14,124,134,.08)' }),
+
 LAB.el('div', { class: 'row', style: 'gap:14px' }, [
-LAB.el('div', { class: 'ic', style: 'width:56px;height:56px;border-radius:16px;background:var(--grad);display:grid;place-items:center;color:#fff', html: LAB.icon('pin', 26) }),
+LAB.el('div', { class: 'ic', style: 'width:52px;height:52px;border-radius:10px;background:var(--th-bg);display:grid;place-items:center;color:var(--teal)', html: LAB.icon('pin', 26) }),
 LAB.el('div', {}, [LAB.el('h4', { html: LAB.escapeHtml(b.name) }), LAB.el('div', { class: 'small', html: ' ' + LAB.escapeHtml(b.address) })])
 ]),
 LAB.el('div', { class: 'mt-2', style: 'display:grid;gap:8px' }, [
@@ -69,10 +69,10 @@ LAB.el('a', { href: 'https://wa.me/' + s.whatsapp, target: '_blank', class: 'btn
 var dw = $('#homeDoctors');
 d.doctors.filter(function (x) { return x.active; }).forEach(function (doc) {
 dw.appendChild(LAB.el('div', { class: 'card card-hover reveal', style: 'padding:0;overflow:hidden;text-align:center' }, [
-LAB.el('div', { style: 'height:200px;background:linear-gradient(160deg,rgba(14,124,134,.12),rgba(34,211,238,.06));display:grid;place-items:center;overflow:hidden' }, [
+LAB.el('div', { style: 'height:200px;background:var(--th-bg);border-bottom:1px solid var(--line);display:grid;place-items:center;overflow:hidden' }, [
 doc.avatar
 ? LAB.el('img', { src: doc.avatar, alt: '', style: 'width:100%;height:100%;object-fit:cover;object-position:top' })
-: LAB.el('div', { style: 'width:110px;height:110px;border-radius:50%;background:var(--grad);color:#fff;display:grid;place-items:center;font-size:38px;font-weight:900', html: doc.name.replace('د. ', '').charAt(0) })
+: LAB.el('div', { style: 'width:96px;height:96px;border-radius:10px;background:var(--teal);color:#fff;display:grid;place-items:center;font-size:34px;font-weight:800', html: doc.name.replace('د. ', '').charAt(0) })
 ]),
 LAB.el('div', { style: 'padding:20px' }, [
 LAB.el('h4', { html: LAB.escapeHtml(doc.name) }),

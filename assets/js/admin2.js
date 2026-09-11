@@ -989,3 +989,24 @@ if (!d.notifications.length) nl.innerHTML = '<div class="empty">لا إشعار�
 }
 };
 })();
+
+/* =========================================================
+   ربط زراير القائمة الجانبية للوحة الأدمن  (إصلاح من الجذور)
+   المشكلة: Admin.go() كان بيغيّر شكل الزر النشط بس،
+   وماكانش فيه أي مستمع نقرة على الروابط — فكل أقسام اللوحة
+   (الحجوزات، المالية، التحاليل، الأطباء، الإعدادات...) كانت ميتة
+   تماماً: بتدوس على أي قسم ومفيش حاجة بتحصل.
+   الحل: ربط فعلي لكل رابط data-v بنداء Admin.go().
+   ========================================================= */
+(function bindAdminNav() {
+  var links = document.querySelectorAll('#adDash .side-nav a[data-v]');
+  if (!links.length) return;
+  links.forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      var v = a.getAttribute('data-v');
+      if (window.Admin && typeof window.Admin.go === 'function') window.Admin.go(v);
+      else if (typeof Admin !== 'undefined' && Admin.go) Admin.go(v);
+    });
+  });
+})();

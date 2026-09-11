@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>لوحة تحكم المدير | معمل الحوشي للتحاليل الطبية</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230e7c86'/><text x='50' y='70' font-size='58' text-anchor='middle' fill='white' font-family='Arial'>حـ</text></svg>">
-<link rel="stylesheet" href="assets/css/style.css?v=3">
+<link rel="stylesheet" href="assets/css/style.css?v=4">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@700;800&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -14,13 +14,13 @@
 <div id="adLogin" class="login-wrap"> <div class="blob" style="width:420px;height:420px;background:#0e7c86;top:-120px;inset-inline-end:-140px"></div> <div class="blob" style="width:360px;height:360px;background:#22d3ee;bottom:-140px;inset-inline-start:-120px"></div> <div class="login-card"> <div class="logo" style="justify-content:center"><div class="logo-mark">حـ</div><div class="center"><b id="lgLab"></b><small>لوحة تحكم المدير</small></div></div> <div class="field"><label>اسم المستخدم</label><input id="adUser" class="input" placeholder="اسم المستخدم" autocomplete="username"></div> <div class="field"><label>كلمة المرور</label><input id="adPass" class="input" type="password" placeholder="••••" autocomplete="current-password"></div> <button class="btn btn-primary w-full" id="adBtn"> دخول لوحة التحكم</button> <p class="small center mt-2">الدخول للمدير العام فقط. الأطباء من <a href="doctor.html" style="color:var(--teal);font-weight:800">صفحة الطبيب</a>.</p> </div>
 </div> <!-- ===== DASHBOARD ===== -->
 <div id="adDash" class="dash hide"> <aside class="sidebar" id="adSide"> <div class="brand"><div class="logo-mark" style="width:38px;height:38px;font-size:16px;border-radius:11px">حـ</div><span>معمل الحوشي</span></div> <div class="side-sec">الرئيسية</div> <nav class="side-nav"> <a href="#" data-v="overview" class="active"><span class="ic" data-icon="grid" data-size="17"></span>نظرة عامة</a> <a href="#" data-v="bookings"><span class="ic" data-icon="calendar" data-size="17"></span>الحجوزات<span class="cnt" id="cBk">0</span></a> <a href="#" data-v="rx"><span class="ic" data-icon="file" data-size="17"></span>الروشتات<span class="cnt" id="cRx">0</span></a> <a href="#" data-v="patients"><span class="ic" data-icon="users" data-size="17"></span>المرضى</a> <a href="#" data-v="finance"><span class="ic" data-icon="wallet" data-size="17"></span>الإيرادات والمصروفات</a> </nav> <div class="side-sec">الإدارة</div> <nav class="side-nav"> <a href="#" data-v="tests"><span class="ic" data-icon="lab" data-size="17"></span>التحاليل والأسعار</a> <a href="#" data-v="packages"><span class="ic" data-icon="layers" data-size="17"></span>الباقات</a> <a href="#" data-v="branches"><span class="ic" data-icon="pin" data-size="17"></span>الفروع</a> <a href="#" data-v="doctors"><span class="ic" data-icon="stethoscope" data-size="17"></span>الأطباء والصلاحيات</a> <a href="#" data-v="areas"><span class="ic" data-icon="home" data-size="17"></span>المناطق ورسوم السحب</a> </nav> <div class="side-sec">التسويق والمحتوى</div> <nav class="side-nav"> <a href="#" data-v="offers"><span class="ic" data-icon="gift" data-size="17"></span>العروض والأكواد</a> <a href="#" data-v="content"><span class="ic" data-icon="chat" data-size="17"></span>المحتوى والآراء</a> <a href="#" data-v="settings"><span class="ic" data-icon="gear" data-size="17"></span>إعدادات المعمل</a> <a href="#" data-v="msgs"><span class="ic" data-icon="bell" data-size="17"></span>مركز الرسائل</a> <a href="#" data-v="poster"><span class="ic" data-icon="qr" data-size="17"></span>QR وملصقات</a> <a href="#" data-v="logs"><span class="ic" data-icon="activity" data-size="17"></span>سجل النشاطات</a> </nav> <div class="side-sec"></div> <nav class="side-nav"> <a href="index.html"><span class="ic" data-icon="home" data-size="17"></span>الصفحة الرئيسية</a> <a href="#" id="adLogout"><span class="ic" data-icon="logout" data-size="17"></span>تسجيل الخروج</a> </nav> </aside> <main class="dash-main"> <div class="dash-top no-print"> <div class="row"> <button class="burger" id="adBurger" title="القائمة" aria-label="فتح القائمة" style="display:grid"><i></i><i></i><i></i></button> <div> <b style="font-size:17px" id="adWelcome">أهلاً بك</b> <div class="small" id="adDate"></div> </div> </div> <div class="row"> <div id="adBell"></div> <button class="btn-icon btn-ghost" id="adTheme" title="تبديل الوضع الليلي / النهاري" aria-label="تبديل الوضع"><i data-icon="sun" data-size="19" class="ic-sun"></i><i data-icon="moon" data-size="19" class="ic-moon"></i></button> <button class="btn btn-ghost btn-sm" id="adBackup"> نسخة احتياطية</button> <button class="btn btn-primary btn-sm" id="adQuick">+ حجز سريع</button> </div> </div> <div id="adViews"></div> </main>
-</div> <script src="assets/js/core.js?v=3"></script>
-<script src="assets/js/supabase-config.js?v=3"></script>
-<script src="assets/js/sync.js?v=3"></script>
-<script src="assets/js/charts.js?v=3"></script>
-<script src="assets/js/qr.js?v=3"></script>
-<script src="assets/js/shared.js?v=3"></script>
-<script src="assets/js/admin.js?v=3"></script>
-<script src="assets/js/admin2.js?v=3"></script>
+</div> <script src="assets/js/core.js?v=4"></script>
+<script src="assets/js/supabase-config.js?v=4"></script>
+<script src="assets/js/sync.js?v=4"></script>
+<script src="assets/js/charts.js?v=4"></script>
+<script src="assets/js/qr.js?v=4"></script>
+<script src="assets/js/shared.js?v=4"></script>
+<script src="assets/js/admin.js?v=4"></script>
+<script src="assets/js/admin2.js?v=4"></script>
 </body>
 </html>

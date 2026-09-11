@@ -509,6 +509,21 @@ LAB.fileToDataURL(f, 400, .8, function (u) { me.avatar = u; LAB.save(); $('#pfPr
 };
 }
 };
+/* =========================================================
+   ربط زراير القائمة الجانبية للوحة الطبيب (نفس إصلاح الأدمن)
+   ========================================================= */
+(function bindDoctorNav() {
+  var links = document.querySelectorAll('#dcDash .side-nav a[data-v]');
+  if (!links.length) return;
+  links.forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      var v = a.getAttribute('data-v');
+      if (typeof Doc !== 'undefined' && Doc.go) Doc.go(v);
+    });
+  });
+})();
+
 /* ---------- start if session ---------- */
 var ses = LAB.getSession();
 if (ses && ses.role === 'doctor') {

@@ -60,7 +60,7 @@ LAB.el('span', { class: 'cat', html: LAB.escapeHtml(t.cat || t.category) })
 LAB.el('div', { class: 'meta' }, [
 LAB.el('span', { html: ' النتيجة: ' + (t.hours >= 24 ? (t.hours / 24) + ' يوم' : t.hours + ' ساعة') }),
 LAB.el('span', { html: ' ' + LAB.escapeHtml(t.sample || 'دم') }),
-t.fasting ? LAB.el('span', { style: 'color:#b97b0d;font-weight:800', html: ' يحتاج صيام' }) : null
+t.fasting ? LAB.el('span', { style: 'color:var(--gold);font-weight:800', html: ' يحتاج صيام' }) : null
 ]),
 LAB.el('div', { class: 'row-between mt-1' }, [
 LAB.el('div', { class: 'price', html: LAB.money(t.price) + ' <span style="font-size:12px;font-weight:700;color:var(--text-soft)">جنيه</span>' }),
@@ -127,9 +127,9 @@ if (!offs.length) { wrap.parentElement.parentElement.style.display = 'none'; ret
 var i = 0;
 function render() {
 var o = offs[i];
-var bg = ['var(--grad-dark)', 'linear-gradient(135deg,#7c3aed,#0e7c86)', 'linear-gradient(135deg,#0e7c86,#f2a93b)'][i % 3];
+var bg = ['var(--navy)', 'var(--teal)', 'var(--navy-2)'][i % 3];
 wrap.innerHTML = '<div class="offer-slide" style="background:' + bg + ';animation:fadeUp .6s">' +
-'<div class="row-between"><div><span class="eyebrow" style="background:rgba(255,255,255,.16);color:#fff;border-color:rgba(255,255,255,.3)">عرض حصري</span>' +
+'<div class="row-between"><div><span class="eyebrow" style="background:transparent;color:#F2C77A;border-color:rgba(255,255,255,.28)">عرض حصري</span>' +
 '<h3 class="mt-2">' + LAB.escapeHtml(o.title) + '</h3><p style="opacity:.9">' + LAB.escapeHtml(o.sub) + '</p>' +
 '<div class="row mt-2"><a href="booking.html?code=' + encodeURIComponent(o.code) + '" class="btn btn-gold">احجز بالعرض</a>' +
 '<button class="btn btn-outline" style="border-color:#fff;color:#fff" onclick="LAB.copyText(\'' + o.code + '\')">كود: ' + LAB.escapeHtml(o.code) + '</button></div></div>' +

@@ -5,17 +5,17 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>تواصل معنا | معمل الحوشي للتحاليل الطبية</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230e7c86'/><text x='50' y='70' font-size='58' text-anchor='middle' fill='white' font-family='Arial'>حـ</text></svg>">
-<link rel="stylesheet" href="assets/css/style.css?v=3">
+<link rel="stylesheet" href="assets/css/style.css?v=4">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@700;800&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 <section class="section" style="padding-top:calc(var(--header-h) + 44px);min-height:70vh"> <div class="container"> <div class="sec-head reveal"> <span class="eyebrow">تواصل معنا</span> <h2 class="mt-2">إحنا هنا <span class="grad-text">لخدمتك</span></h2> <p>أي استفسار عن تحليل أو نتيجة أو عرض — كلمنا هنرد عليك في الحال.</p> </div> <div class="split" style="grid-template-columns:.9fr 1.1fr;gap:34px;align-items:start"> <div class="reveal"> <div id="contactCards" style="display:grid;gap:14px"></div> <div class="card mt-3" style="padding:22px"> <h4> مواعيد العمل</h4> <div id="hoursList" style="display:grid;gap:8px;margin-top:10px"></div> </div> <div class="card mt-3" style="padding:22px;background:var(--grad);color:#fff"> <h4 style="color:#fff"> الدفع بانستا باي</h4> <p style="opacity:.92;font-size:14px">حوّل على الرقم وابعت الإيصال على واتساب المعمل.</p> <div class="ip-number" style="background:rgba(255,255,255,.18);box-shadow:none"> <span id="cIP"></span> <button class="btn btn-sm btn-gold" onclick="LAB.copyText(LAB.db().settings.instapay)"> نسخ</button> </div> </div> </div> <div class="card reveal d1" style="padding:28px"> <h4 class="mb-2"> ابعتلنا رسالة</h4> <div class="field-row"> <div class="field"><label>الاسم</label><input id="cName" class="input"></div> <div class="field"><label>الموبايل</label><input id="cPhone" class="input" inputmode="tel" dir="ltr"></div> </div> <div class="field"><label>الموضوع</label><select id="cSubject" class="select"><option>استفسار عن تحليل</option><option>استفسار عن نتيجة</option><option>شكوى أو اقتراح</option><option>تعاون / تأمين طبي</option><option>أخرى</option></select></div> <div class="field"><label>الرسالة</label><textarea id="cMsg" class="textarea" placeholder="اكتب رسالتك…"></textarea></div> <div class="row"> <button class="btn btn-primary" id="cSend">إرسال</button> <a id="cWa" target="_blank" class="btn btn-success"> إرسال عبر واتساب</a> </div> <div class="divider"></div> <div id="branchBox" style="display:grid;gap:14px"></div> </div> </div> </div>
-</section> <script src="assets/js/core.js?v=3"></script>
-<script src="assets/js/supabase-config.js?v=3"></script>
-<script src="assets/js/sync.js?v=3"></script>
-<script src="assets/js/shared.js?v=3"></script>
+</section> <script src="assets/js/core.js?v=4"></script>
+<script src="assets/js/supabase-config.js?v=4"></script>
+<script src="assets/js/sync.js?v=4"></script>
+<script src="assets/js/shared.js?v=4"></script>
 <script>
 (function(){
 LAB.load(); LAB.buildShell('contact.html');

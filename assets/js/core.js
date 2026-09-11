@@ -1,7 +1,78 @@
 /* =========================================================
-ELHOSHY LAB — Core (data layer, seed, utils, shell)
+   ELHOSHY LAB — Core (data layer, seed, utils, shell)
 يعمل بدون إنترنت — كل البيانات في localStorage
 ========================================================= */
+/* =========================================================
+   حماية من خلط النسخ (كاش قديم + صفحة جديدة) — إصلاح من الجذور
+   المشكلة: لو المتصفح شايل نسخة قديمة من الجافاسكريبت أو الـ CSS
+   والصفحةHTML جديدة، الأيقونات بتطلع «كود» نصي على الشاشة واللوحات
+   بتتعلّق. الحل: نقارن رقم نسخة الأصول المحفوظ عند الزائر برقم
+   نسخة الصفحة — لو مختلفين: نمسح كل الكاشات والـ Service Workers
+   القديمة ونعيد التحميل **مرة واحدة** (guard ضد اللوب).
+   ========================================================= */
+var ELH_BUILD = '4';
+(function elhSelfHeal() {
+  try {
+    var kVer = 'elhoshy_build_v1', kFlag = 'elhoshy_healed_v1';
+    var prev = window.localStorage.getItem(kVer);
+    if (prev && prev !== ELH_BUILD && !window.sessionStorage.getItem(kFlag)) {
+      window.sessionStorage.setItem(kFlag, '1');
+      window.localStorage.setItem(kVer, ELH_BUILD);
+      try {
+        if (window.caches && caches.keys) {
+          caches.keys().then(function (ks) { ks.forEach(function (k) { caches.delete(k); }); }).catch(function () { });
+        }
+        if (navigator.serviceWorker && navigator.serviceWorker.getRegistrations) {
+          navigator.serviceWorker.getRegistrations().then(function (regs) {
+            regs.forEach(function (r) { try { r.unregister(); } catch (e) { } });
+          }).catch(function () { });
+        }
+      } catch (e) { }
+      setTimeout(function () { try { location.reload(); } catch (e) { } }, 80);
+      return;
+    }
+    window.localStorage.setItem(kVer, ELH_BUILD);
+  } catch (e) { }
+})();
+
+/* حارس أخطاء: لو حصلت أخطاء كتير في الجافاسكريبت، نعرض شريط تحديث بدل ما يفضل الموقع مبوّظ */
+(function elhErrorGuard() {
+  var n = 0, shown = false;
+  window.addEventListener('error', function () {
+    n++;
+    if (n >= 4 && !shown) { shown = true; elhShowFixBar(); }
+  }, true);
+  window.addEventListener('unhandledrejection', function () {
+    n++;
+    if (n >= 4 && !shown) { shown = true; elhShowFixBar(); }
+  });
+  function elhShowFixBar() {
+    try {
+      if (document.getElementById('elhFixBar')) return;
+      var b = document.createElement('div');
+      b.id = 'elhFixBar';
+      b.style.cssText = 'position:fixed;bottom:14px;left:14px;right:14px;z-index:99999;background:#0E1A20;color:#fff;' +
+        'border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:12px 14px;display:flex;gap:12px;' +
+        'align-items:center;justify-content:space-between;font-family:inherit;font-size:14px;direction:rtl';
+      b.innerHTML = '<span>حصلت مشكلة في تحميل الموقع — غالباً نسخة قديمة محفوظة عندك.</span>';
+      var btn = document.createElement('button');
+      btn.textContent = 'تحديث ومسح الكاش';
+      btn.style.cssText = 'background:#4FD1C5;color:#04252B;border:0;border-radius:8px;padding:9px 14px;font-weight:800;cursor:pointer;font-family:inherit';
+      btn.onclick = function () {
+        try {
+          if (window.caches && caches.keys) caches.keys().then(function (ks) { ks.forEach(function (k) { caches.delete(k); }); }).catch(function () { });
+          if (navigator.serviceWorker && navigator.serviceWorker.getRegistrations) {
+            navigator.serviceWorker.getRegistrations().then(function (regs) { regs.forEach(function (r) { r.unregister(); }); }).catch(function () { });
+          }
+        } catch (e) { }
+        setTimeout(function () { location.reload(); }, 200);
+      };
+      b.appendChild(btn);
+      (document.body || document.documentElement).appendChild(b);
+    } catch (e) { }
+  }
+})();
+
 (function (global) {
 'use strict';
 var DB_KEY = 'elhoshy_lab_db_v1';
@@ -601,7 +672,20 @@ var h = $('.site-header'); if (h) h.classList.toggle('scrolled', window.scrollY 
 // تفعيل العمل بدون إنترنت (PWA)
 try {
 if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
-navigator.serviceWorker.register('sw.js').catch(function () { });
+navigator.serviceWorker.register('sw.js').then(function (reg) {
+// أي نسخة جديدة من الـ SW تت activated فوراً
+if (reg && reg.addEventListener) {
+reg.addEventListener('updatefound', function () {
+var nw = reg.installing;
+if (!nw) return;
+nw.addEventListener('statechange', function () {
+if (nw.state === 'installed' && navigator.serviceWorker.controller) {
+try { nw.postMessage('skip'); } catch (e) { }
+}
+});
+});
+}
+}).catch(function () { });
 }
 } catch (e) { }
 var ic = $('#themeIcon'); if (ic) ic.textContent = '';

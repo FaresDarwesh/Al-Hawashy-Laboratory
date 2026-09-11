@@ -949,3 +949,257 @@ html[data-theme="dark"] .btn-primary:hover{background:#6FE0D6!important}
 html[data-theme="dark"] .login-wrap::before{background-image:radial-gradient(circle at 1px 1px,rgba(79,209,197,.15) 1px,transparent 0)}
 .login-card{position:relative;z-index:1;border:1px solid var(--line)!important;box-shadow:var(--shadow-lg)!important;border-radius:14px;background:var(--card)}
 .login-card .logo-mark{border-radius:10px}
+
+/* ============================================================
+   تصميم v4 — بنية تحريرية (مش كروت قوالب متكررة)
+   ------------------------------------------------------------
+   · الهيرو: إطار «تقرير معمل» بخط شعري — من غير كروت عائمة ولا حلقات دوّارة
+   · شريط بيانات (data bar) بدل ٤ كروت إحصائيات متكررة
+   · الخدمات: «فهرس» مرقّم بصفوف وخطوط شعرية بدل شبكة كروت متشابهة
+   · الخطوات: شريط تسلسلي مرقّم بدل ٤ كروت متكررة
+   · عنوان القسم: عمودين (عنوان | وصف) زي المجلات
+   · الآراء: اقتباسات تحريرية، والأسئلة: صفوف بخط شعري
+   ============================================================ */
+
+/* ---------- 1) الهيرو: إزالة الزخارف + إطار تحريري ---------- */
+.hero .ring,.hero .floating-card{display:none!important}
+.hero::before{height:100%;inset:0;top:0;bottom:auto!important;animation:none!important}
+.hero-art{align-content:center}
+.doctor-frame{
+  position:relative;width:min(370px,92%);border-radius:10px!important;overflow:hidden;
+  border:1px solid var(--line-2)!important;border-width:1px!important;
+  background:var(--card)!important;padding:10px 10px 0;
+  box-shadow:0 1px 2px rgba(18,30,38,.05),0 18px 40px rgba(18,30,38,.10)!important;
+  animation:none!important;
+}
+.doctor-frame::before{display:none!important}
+.doctor-frame::after{display:none!important}
+.doctor-frame img{border-radius:6px!important;aspect-ratio:4/5;object-position:50% 10%;transform:none!important}
+.doctor-frame:hover img{transform:none!important}
+.doctor-caption{
+  position:static!important;padding:12px 4px 12px!important;color:var(--text)!important;
+  text-align:center;background:transparent!important;
+}
+.doctor-caption b{font-family:var(--font-display);font-weight:800;font-size:18px;letter-spacing:-.01em}
+.doctor-caption span{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.02em;color:var(--text-soft);opacity:1}
+.hero h1{font-size:clamp(32px,4.6vw,58px);line-height:1.16;letter-spacing:-.025em}
+.hero .lead{max-width:52ch}
+.hero .eyebrow{display:inline-flex;align-items:center;gap:9px}
+.hero .eyebrow::after{content:"";width:36px;height:1px;background:var(--line-2);display:inline-block}
+
+/* ---------- 2) شريط البيانات (الإحصائيات) ---------- */
+.stats{
+  margin-top:58px;gap:0!important;grid-template-columns:repeat(4,1fr);
+  border-top:1px solid var(--line-2);border-bottom:1px solid var(--line-2);background:transparent;
+}
+.stat{
+  background:transparent!important;border:0;border-inline-end:1px solid var(--line)!important;
+  border-radius:0!important;box-shadow:none!important;padding:20px 14px!important;
+  transform:none!important;overflow:visible;
+}
+.stat:last-child{border-inline-end:0!important}
+.stat::before{display:none!important}
+.stat:hover{transform:none!important}
+.stat .num{
+  font-family:var(--font-mono);font-weight:600;letter-spacing:-.03em;font-size:clamp(24px,2.7vw,34px);
+  background:none!important;-webkit-text-fill-color:currentColor!important;color:var(--ink)!important;
+  font-variant-numeric:tabular-nums;line-height:1.1;
+}
+.stat .lbl{font-size:12.5px;font-weight:600;color:var(--text-soft)}
+.stat .stat-ic{display:none}
+@media(max-width:700px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .stat:nth-child(2){border-inline-end:0!important}
+  .stat:nth-child(1),.stat:nth-child(2){border-bottom:1px solid var(--line)!important}
+}
+
+/* ---------- 3) الخدمات: فهرس مرقّم بصفوف ---------- */
+#services .grid.g3{display:block;counter-reset:svc}
+#services .grid.g3 > .svc{
+  display:grid;grid-template-columns:40px 48px minmax(0,1fr) minmax(0,1.05fr);
+  gap:6px 22px;align-items:start;position:relative;
+  background:transparent!important;border:0!important;border-bottom:1px solid var(--line)!important;
+  border-radius:0!important;box-shadow:none!important;padding:26px 10px!important;
+  transform:none!important;transition:background .2s ease;
+}
+#services .grid.g3 > .svc:last-child{border-bottom:0!important}
+#services .grid.g3 > .svc:hover{background:var(--bg-2)!important;transform:none!important}
+#services .grid.g3 > .svc::before{
+  counter-increment:svc;content:counter(svc,decimal-leading-zero);
+  font-family:var(--font-mono);font-size:12px;font-weight:600;color:var(--teal);
+  letter-spacing:.02em;padding-top:12px;grid-column:1;grid-row:1;
+}
+#services .grid.g3 > .svc::after{display:none!important}
+#services .grid.g3 > .svc > .ic{grid-column:2;grid-row:1;
+  width:48px;height:48px;border-radius:10px!important;
+  background:var(--th-bg)!important;color:var(--teal)!important;box-shadow:none!important;
+  display:grid!important;place-items:center;
+}
+#services .grid.g3 > .svc > .ic svg{stroke:currentColor}
+#services .grid.g3 > .svc > h4{grid-column:3;grid-row:1;font-size:19.5px;margin:0 0 6px!important}
+#services .grid.g3 > .svc > p{grid-column:3;grid-row:2;margin:0!important;font-size:14.5px}
+#services .grid.g3 > .svc > ul{grid-column:4;grid-row:1/3;margin:0!important;gap:9px}
+#services .grid.g3 > .svc > ul li{font-size:13px;line-height:1.6}
+#services .grid.g3 > .svc > ul li::before{content:"—";color:var(--teal);font-weight:700;font-family:var(--font-mono)}
+@media(max-width:900px){
+  #services .grid.g3 > .svc{grid-template-columns:34px 44px minmax(0,1fr);gap:4px 16px;padding:22px 6px!important}
+  #services .grid.g3 > .svc > h4{grid-column:3;grid-row:1}
+  #services .grid.g3 > .svc > p{grid-column:3;grid-row:2}
+  #services .grid.g3 > .svc > ul{grid-column:3;grid-row:3;margin-top:12px!important}
+}
+
+/* ---------- 4) الخطوات: شريط تسلسلي مرقّم ---------- */
+.grid.g4{counter-reset:step;gap:28px}
+.grid.g4 > .svc.center{
+  background:transparent!important;border:0!important;border-top:2px solid var(--ink)!important;
+  border-radius:0!important;box-shadow:none!important;padding:22px 0 0!important;
+  text-align:start!important;transform:none!important;
+}
+.grid.g4 > .svc.center::before{
+  counter-increment:step;content:"الخطوة " counter(step,decimal-leading-zero);
+  font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:var(--teal);
+  display:block;margin-bottom:12px;letter-spacing:.02em;
+}
+.grid.g4 > .svc.center::after{display:none!important}
+.grid.g4 > .svc.center .ic{
+  width:44px;height:44px;border-radius:10px!important;margin:0 0 14px!important;
+  background:var(--th-bg)!important;color:var(--teal)!important;box-shadow:none!important;
+  display:grid!important;place-items:center;
+}
+.grid.g4 > .svc.center .ic svg{stroke:currentColor}
+.grid.g4 > .svc.center h4{font-size:17.5px;margin-bottom:6px}
+.grid.g4 > .svc.center p.small{font-size:13.5px;line-height:1.85}
+@media(max-width:900px){.grid.g4{grid-template-columns:repeat(2,1fr)}}
+
+/* ---------- 5) عنوان القسم: عمودين زي المجلات ---------- */
+.sec-head{
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,400px);
+  gap:6px 34px;align-items:end;text-align:start;max-width:none;margin:0 auto 40px;
+}
+.sec-head > .eyebrow{grid-column:1;grid-row:1;margin:0 0 6px!important}
+.sec-head > h2{grid-column:1;grid-row:2;margin:0!important}
+.sec-head > p{grid-column:2;grid-row:1/3;align-self:end;margin:0!important;
+  font-size:14.5px;line-height:1.9;color:var(--text-soft);max-width:44ch}
+@media(max-width:880px){
+  .sec-head{grid-template-columns:1fr}
+  .sec-head > p{grid-column:1;grid-row:auto;margin-top:10px!important;max-width:none}
+}
+
+/* ---------- 6) كروت التحاليل: مسطّحة بلا تدرّج ---------- */
+.test-card{border-radius:8px!important}
+.test-card:hover{transform:none!important;box-shadow:none!important;border-color:var(--teal)}
+.test-card.selected{background:var(--th-bg)!important;border-color:var(--teal)!important;box-shadow:none!important}
+.test-card .cat{background:transparent!important;color:var(--text-soft)!important;
+  font-family:var(--font-mono);font-size:11px;letter-spacing:.02em;padding:0!important;border-radius:0}
+.test-card .price{font-family:var(--font-mono);font-weight:600;letter-spacing:-.02em;color:var(--ink)!important;font-size:17px}
+html[data-theme="dark"] .test-card .price{color:var(--cyan)!important}
+.test-card .meta{font-family:var(--font-mono);font-size:11.5px}
+.test-card .check{border-radius:6px!important;width:22px;height:22px;border:1px solid var(--line-2);background:var(--card);color:var(--line-2)}
+.test-card.selected .check{background:var(--teal)!important;border-color:var(--teal)!important;color:#fff!important}
+
+/* ---------- 7) الآراء: اقتباس تحريري ---------- */
+.review-card{
+  background:transparent!important;border:1px solid var(--line)!important;border-top:2px solid var(--teal)!important;
+  border-radius:var(--radius);padding:24px;box-shadow:none!important;height:100%;transform:none!important;
+}
+.review-card:hover{transform:none!important;box-shadow:none!important;border-color:var(--line-2)!important;border-top-color:var(--teal)!important}
+#homeReviews .review-card p{font-family:var(--font-display);font-weight:700;font-size:15px;line-height:1.8;color:var(--text)!important}
+.review-card .who{margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+.avatar{width:36px!important;height:36px!important;border-radius:8px!important;
+  background:var(--th-bg)!important;color:var(--teal)!important;font-family:var(--font-display);font-weight:800}
+.review-card .who .small{font-family:var(--font-mono);font-size:11.5px}
+
+/* ---------- 8) الأسئلة الشائعة: صفوف بخط شعري ---------- */
+.acc{border:0!important;border-bottom:1px solid var(--line)!important;border-radius:0!important;
+  background:transparent!important;margin-bottom:0!important;box-shadow:none!important}
+.acc:first-child{border-top:1px solid var(--line)!important}
+.acc:hover{border-color:var(--line)!important}
+.acc-head{padding:18px 4px!important;font-family:var(--font-display);font-weight:800;font-size:16px}
+.acc-head .plus{width:26px!important;height:26px!important;border-radius:6px!important;
+  background:transparent!important;border:1px solid var(--line-2);color:var(--teal)!important;
+  font-family:var(--font-mono);font-weight:600}
+.acc.open .acc-head .plus{background:var(--teal)!important;border-color:var(--teal)!important;color:#fff!important}
+.acc-body div{padding:0 4px 18px!important;color:var(--text-soft)!important;font-size:14.5px}
+
+/* ---------- 9) الشرائح/الـ CTA: مسطّح بخط شعري ---------- */
+.offer-slide{border-radius:10px!important;box-shadow:none!important;padding:38px!important;min-height:0!important}
+.offer-slide::after{display:none!important}
+.offer-slide .big{color:#F2C77A!important;opacity:.9}
+
+/* ---------- 10) الشرائط الصغيرة (pills) ---------- */
+.pill{background:transparent!important;border:1px solid var(--line-2)!important;border-radius:6px!important;
+  box-shadow:none!important;color:var(--text-soft)!important;font-size:12.5px;padding:7px 12px}
+.pill svg{stroke:var(--teal)}
+
+/* ---------- 11) الفوتر: سطر حقوق بطابع أحادي المسافة ---------- */
+.footer-bottom{
+  display:flex!important;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+  text-align:start!important;font-family:var(--font-mono);font-size:12px;letter-spacing:.02em;
+  color:#7C8A8F!important;border-top:1px solid rgba(255,255,255,.12);margin-top:38px;padding:18px 0!important;
+}
+
+/* ---------- 12) كروت الفروع والدكاترة: تخلّي عن التدرّجات ---------- */
+#homeBranches .card > div[style*="border-radius:50%"]{display:none!important}
+#homeDoctors .card > div[style*="linear-gradient"]{background:var(--th-bg)!important;height:180px!important}
+#homeDoctors .card > div[style*="linear-gradient"] > div{border-radius:10px!important;width:96px!important;height:96px!important;
+  background:var(--teal)!important;color:#fff!important}
+.card > .row > .ic{border-radius:10px!important;background:var(--th-bg)!important;color:var(--teal)!important;box-shadow:none!important}
+.card > .row > .ic svg{stroke:currentColor}
+
+/* ============================================================
+   v4 (تكملة) — تصفية آخر آثار الـ AI: الزجاج، التدرّجات، اللمعات
+   الهدف: ولا عنصر فيه backdrop-filter، ولا تدرّج لامع،
+   ولا ظل ملوّن — كل حاجة سطح مسطّح بخط شعري.
+   ============================================================ */
+
+/* 1) مفيش زجاج خالص في الموقع */
+.glass,.pill,.floating-card,.badge,.modal-backdrop,.chip,
+.site-header,.site-footer,.card,.test-card,.review-card{
+  backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+.glass{background:var(--card)!important;border:1px solid var(--line)!important}
+.modal-backdrop{background:rgba(6,40,61,.55)!important;backdrop-filter:none!important}
+
+/* 2) الأزرار العائمة: مربّعات مسطّحة بدل دوائر متدرّجة */
+.fab{
+  width:52px!important;height:52px!important;border-radius:10px!important;
+  box-shadow:0 6px 18px rgba(18,30,38,.18)!important;
+}
+.fab-wa{background:#1F7A4C!important}
+.fab-call{background:var(--teal)!important}
+.fab-top{background:var(--navy)!important}
+.fab:hover{transform:translateY(-2px)!important}
+.fab span{border-radius:6px!important;font-family:var(--font-mono);font-size:11.5px!important;letter-spacing:.02em}
+
+/* 3) كروت الاختيار في الحجز: حدّ شعري + علامة صح، بلا تدرّج ولا ظل ملوّن */
+.opt-card{border:1px solid var(--line)!important;border-radius:10px!important;background:var(--card)!important}
+.opt-card:hover{border-color:var(--line-2)!important;transform:none!important}
+.opt-card.active{border-color:var(--teal)!important;border-width:1.5px!important;background:var(--th-bg)!important;box-shadow:none!important}
+.opt-card .tick{border-radius:6px!important;width:22px!important;height:22px!important}
+
+/* 4) بوابة الأطباء: أيقونة مسطّحة بلون واحد */
+.portal-card .portal-ic{
+  border-radius:10px!important;background:var(--teal)!important;color:#fff!important;
+  box-shadow:none!important;
+}
+.portal-card[data-portal="doctor"] .portal-ic{background:var(--navy)!important;box-shadow:none!important}
+.portal-card{background:var(--card)!important;transform:none!important}
+.portal-card:hover{transform:translateY(-2px)!important;border-color:var(--teal)!important;box-shadow:0 10px 26px rgba(18,30,38,.10)!important}
+
+/* 5) الهيرو: سطح مسطّح بلا تدرّج */
+.hero{background:var(--bg)!important;background-image:none!important}
+html[data-theme="dark"] .hero{background:var(--bg)!important}
+
+/* 6) الشرائح الصغيرة والشارات فوق الخلفيات */
+.hero .pill,.offer-slide .pill{background:transparent!important;border-color:rgba(255,255,255,.3)!important;color:inherit!important}
+
+/* 7) ظلال محايدة فقط — ولا ظل ملوّن */
+.card,.test-card,.review-card,.chart-card,.kpi,.stat,.summary,.modal{
+  box-shadow:0 1px 2px rgba(18,30,38,.04),0 8px 20px rgba(18,30,38,.05)!important;
+}
+.card-hover:hover,.test-card:hover,.review-card:hover{
+  box-shadow:0 2px 4px rgba(18,30,38,.06),0 16px 34px rgba(18,30,38,.08)!important;
+}
+
+/* 8) آخر عنصرين فيهما زجاج (مخفيّان أصلاً) — تنظيف للنهاية */
+.cloud-badge,.hide{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
